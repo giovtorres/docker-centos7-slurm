@@ -61,7 +61,7 @@ PartitionName=normal
 ```
 git clone https://github.com/giovtorres/docker-centos7-slurm
 cd docker-centos7-slurm
-docker build -t giovtorres/docker-centos7-slurm .
+docker build -t docker-centos7-slurm .
 ```
 
 ## Notes
