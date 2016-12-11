@@ -62,6 +62,6 @@ COPY slurm.conf /etc/slurm/slurm.conf
 COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
 COPY supervisord.conf /etc/
 
-VOLUME ["/var/lib/mysql", "/var/lib/slurmd", "/var/spool/slurmd", "/var/log/slurmd"]
+VOLUME ["/var/lib/mysql", "/var/lib/slurmd", "/var/spool/slurmd", "/var/log/slurm"]
 
 ENTRYPOINT /usr/bin/supervisord -c /etc/supervisord.conf && /bin/bash
