@@ -3,7 +3,7 @@ MAINTAINER Giovanni Torres
 
 ENV SLURM_VERSION 16.05.7
 ENV SLURM_DOWNLOAD_MD5 742c12e54dfc12eb4dc8156c845745ea
-ENV SLURM_DOWNLOAD_URL http://www.schedmd.com/download/latest/slurm-"$SLURM_VERSION".tar.bz2
+ENV SLURM_DOWNLOAD_URL https://www.schedmd.com/downloads/latest/slurm-"$SLURM_VERSION".tar.bz2
 
 RUN yum makecache fast \
     && yum -y install epel-release \
