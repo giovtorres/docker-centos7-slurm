@@ -12,9 +12,13 @@ container runs the following processes:
 
 ## Usage
 
+There are multiple
+[tags](https://hub.docker.com/r/giovtorres/docker-centos7-slurm/tags/)
+available.  To use the latest available image, run:
+
 ```
-docker pull giovtorres/docker-centos7-slurm
-docker run -it -h ernie giovtorres/docker-centos7-slurm
+docker pull giovtorres/docker-centos7-slurm:latest
+docker run -it -h ernie giovtorres/docker-centos7-slurm:latest
 ```
 
 The above command will drop you into a bash shell inside the container.
@@ -58,10 +62,14 @@ PartitionName=normal
 
 ## Building
 
+There are multiple versions of Slurm available, each in its own subdirectory.
+To build a particular version, change into the directory and build the
+Dockerfile:
+
 ```
 git clone https://github.com/giovtorres/docker-centos7-slurm
-cd docker-centos7-slurm
-docker build -t docker-centos7-slurm .
+cd docker-centos7-slurm/16.05.9
+docker build -t docker-centos7-slurm:16.05.9 .
 ```
 
 ## Notes
