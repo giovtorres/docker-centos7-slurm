@@ -1,9 +1,9 @@
 FROM centos:7
 MAINTAINER Giovanni Torres
 
-ENV SLURM_VERSION 17.02.4
-ENV SLURM_DOWNLOAD_MD5 30052693a84fbf664f8695dd4c10413d
-ENV SLURM_DOWNLOAD_URL https://www.schedmd.com/downloads/archive/slurm-"$SLURM_VERSION".tar.bz2
+ENV SLURM_VERSION 17.02.5
+ENV SLURM_DOWNLOAD_MD5 9bcbddd4bffca6e26b7c03dd96b6f3e2
+ENV SLURM_DOWNLOAD_URL https://www.schedmd.com/downloads/latest/slurm-"$SLURM_VERSION".tar.bz2
 
 RUN yum makecache fast \
     && yum -y install epel-release \
