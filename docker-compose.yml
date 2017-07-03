@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  slurm:
+    build: .
+    hostname: ernie
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./volumes/lib:/var/lib/slurmd
+      - ./volumes/spool:/var/spool/slurmd
+      - ./volumes/log:/var/log/slurm
+      - ./volumes/db:/var/lib/mysql

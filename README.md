@@ -47,6 +47,7 @@ You can run the usual slurm commands:
 [root@ernie /]# sinfo
 PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
 normal*      up 5-00:00:00      5   idle c[1-5]
+debug        up 5-00:00:00      5   idle c[6-10]
 ```
 
 ```
@@ -73,6 +74,39 @@ git clone https://github.com/giovtorres/docker-centos7-slurm
 git checkout 17.02.3
 docker build -t docker-centos7-slurm .
 ```
+
+## Using docker-compose
+
+The included docker-compose file will run the cluster container in the
+background.  The docker-compose file uses data volumes to store the slurm state
+between container runs.  To start the cluster container, run: 
+
+    docker-compose up -d
+
+To execute commands in the container, use `docker exec`:
+
+    docker exec dockercentos7slurm_slurm_1 sinfo
+    PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
+    normal*      up 5-00:00:00      5   idle c[1-5]
+    debug        up 5-00:00:00      5   idle c[6-10]
+
+    docker exec dockercentos7slurm_slurm_1 sbatch --wrap="sleep 10"
+    Submitted batch job 27
+
+    docker exec dockercentos7slurm_slurm_1 squeue
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+                27    normal     wrap     root  R       0:07      1 c1
+
+To attach to the bash shell inside the running container, run:
+
+    docker attach dockercentos7slurm_slurm_1
+
+Press `Ctrl-p,Ctrl-q` to detach from the container without killing the bash
+process and stopping the container.
+
+To stop the cluster container, run:
+
+    docker-compose down
 
 ## Notes
 
