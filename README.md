@@ -68,8 +68,7 @@ Dockerfile:
 
 ```
 git clone https://github.com/giovtorres/docker-centos7-slurm
-cd docker-centos7-slurm/16.05.9
-docker build -t docker-centos7-slurm:16.05.9 .
+docker build -t docker-centos7-slurm .
 ```
 
 ## Notes
