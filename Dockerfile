@@ -1,8 +1,8 @@
 FROM centos:7
 MAINTAINER Giovanni Torres
 
-ENV SLURM_VERSION 17.02.1-2
-ENV SLURM_DOWNLOAD_MD5 80d0a51a16bfbbdc0ed66b99690ab87f
+ENV SLURM_VERSION 17.02.2
+ENV SLURM_DOWNLOAD_MD5 7ab8209e206af8a2b6d3b32f6f867e6d
 ENV SLURM_DOWNLOAD_URL https://www.schedmd.com/downloads/archive/slurm-"$SLURM_VERSION".tar.bz2
 
 RUN yum makecache fast \
