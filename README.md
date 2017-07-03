@@ -1,5 +1,7 @@
 # Slurm on CentOS 7 Docker Image
 
+[![](https://images.microbadger.com/badges/image/giovtorres/docker-centos7-slurm.svg)](https://microbadger.com/images/giovtorres/docker-centos7-slurm "Get your own image badge on microbadger.com")
+
 This is an all-in-one [Slurm](https://slurm.schedmd.com/) installation.  This
 container runs the following processes:
 
