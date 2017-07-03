@@ -1,6 +1,11 @@
 FROM centos:7
 MAINTAINER Giovanni Torres
 
+LABEL org.label-schema.vcs-url="https://github.com/giovtorres/docker-centos7-slurm" \
+      org.label-schema.docker.cmd="docker run -it -h ernie giovtorres/docker-centos7-slurm:latest" \
+      org.label-schema.name="docker-centos7-slurm" \
+      org.label-schema.description="Slurm All-in-one Docker container on CentOS 7"
+
 ENV SLURM_VERSION 17.02.5
 ENV SLURM_DOWNLOAD_MD5 9bcbddd4bffca6e26b7c03dd96b6f3e2
 ENV SLURM_DOWNLOAD_URL https://www.schedmd.com/downloads/latest/slurm-"$SLURM_VERSION".tar.bz2
