@@ -64,12 +64,13 @@ PartitionName=normal
 
 ## Building
 
-There are multiple versions of Slurm available, each in its own subdirectory.
-To build a particular version, change into the directory and build the
-Dockerfile:
+There are multiple versions of Slurm available, each in its own tag.  To build
+a specific version of Slurm, checkout the tag that matches that version and
+build the Dockerfile:
 
 ```
 git clone https://github.com/giovtorres/docker-centos7-slurm
+git checkout 17.02.3
 docker build -t docker-centos7-slurm .
 ```
 
