@@ -1,5 +1,8 @@
 # Slurm on CentOS 7 Docker Image
 
+[![Docker Build Status](https://img.shields.io/docker/build/giovtorres/docker-centos7-slurm.svg)]()
+[![Docker Automated build](https://img.shields.io/docker/automated/giovtorres/docker-centos7-slurm.svg)]()
+[![Docker Pulls](https://img.shields.io/docker/pulls/giovtorres/docker-centos7-slurm.svg)]()
 [![](https://images.microbadger.com/badges/image/giovtorres/docker-centos7-slurm.svg)](https://microbadger.com/images/giovtorres/docker-centos7-slurm "Get your own image badge on microbadger.com")
 
 This is an all-in-one [Slurm](https://slurm.schedmd.com/) installation.  This
