@@ -26,13 +26,18 @@ RUN yum makecache fast \
         supervisor \
         python-devel \
         python-pip \
+        python34 \
+        python34-devel \
+        python34-pip \
         mariadb-server \
         mariadb-devel \
         psmisc \
         bash-completion \
     && yum clean all
 
-RUN pip install Cython nose nose2
+RUN pip install Cython nose \
+    && pip3 install Cython nose
+
 RUN groupadd -r slurm && useradd -r -g slurm slurm
 
 RUN set -x \
