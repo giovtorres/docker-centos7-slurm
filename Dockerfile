@@ -6,9 +6,9 @@ LABEL org.label-schema.vcs-url="https://github.com/giovtorres/docker-centos7-slu
       org.label-schema.name="docker-centos7-slurm" \
       org.label-schema.description="Slurm All-in-one Docker container on CentOS 7"
 
-ENV SLURM_VERSION 17.02.7
-ENV SLURM_DOWNLOAD_MD5 64009c1ed120b9ce5d79424dca743a06
-ENV SLURM_DOWNLOAD_URL https://www.schedmd.com/downloads/archive/slurm-"$SLURM_VERSION".tar.bz2
+ENV SLURM_VERSION 17.02.8
+ENV SLURM_DOWNLOAD_MD5 1cdeb908cb8ed13872eb2772501b2c27
+ENV SLURM_DOWNLOAD_URL https://www.schedmd.com/downloads/latest/slurm-"$SLURM_VERSION".tar.bz2
 
 RUN yum makecache fast \
     && yum -y install epel-release \
