@@ -8,7 +8,7 @@ LABEL org.label-schema.vcs-url="https://github.com/giovtorres/docker-centos7-slu
 
 ENV SLURM_VERSION 17.02.9
 ENV SLURM_DOWNLOAD_MD5 6bd0b38e6bf08f3426a7dd1e663a2e3c
-ENV SLURM_DOWNLOAD_URL https://www.schedmd.com/slurm/slurm-"$SLURM_VERSION".tar.bz2
+ENV SLURM_DOWNLOAD_URL https://download.schedmd.com/slurm/slurm-"$SLURM_VERSION".tar.bz2
 
 RUN yum makecache fast \
     && yum -y install epel-release \
