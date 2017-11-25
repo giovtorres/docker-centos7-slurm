@@ -33,6 +33,7 @@ RUN yum makecache fast \
         mariadb-devel \
         psmisc \
         bash-completion \
+        java-1.8.0-openjdk \
     && yum clean all
 
 RUN pip install Cython nose \
