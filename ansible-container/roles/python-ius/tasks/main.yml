@@ -1,0 +1,23 @@
+---
+- name: Add IUS Yum repository
+  yum_repository:
+    name: ius
+    description: "IUS Community Packages for Enterprise Linux 7 - $basearch"
+    mirrorlist: "https://mirrors.iuscommunity.org/mirrorlist?repo=ius-centos7&arch=$basearch&protocol=http"
+    failovermethod: priority
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: "file:///etc/pki/rpm-gpg/IUS-COMMUNITY-GPG-KEY"
+
+- name: Download GPG key
+  get_url:
+    url: https://dl.iuscommunity.org/pub/ius/IUS-COMMUNITY-GPG-KEY
+    dest: /etc/pki/rpm-gpg/IUS-COMMUNITY-GPG-KEY
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Import GPG key
+  rpm_key:
+    state: present
+    key: /etc/pki/rpm-gpg/IUS-COMMUNITY-GPG-KEY

@@ -1,0 +1,96 @@
+---
+- name: Install Python 3.5 and 3.6
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python35u
+    - python35u-devel
+    - python35u-pip
+    - python36u
+    - python36u-devel
+    - python36u-pip
+
+- name: Install dependencies | Python 2.6
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - autoconf
+    - bzip2-devel
+    - gcc
+    - gcc-c++
+    - gdbm-devel
+    - glibc-devel
+    - gmp-devel
+    - libffi-devel
+    - libGL-devel
+    - libX11-devel
+    - make
+    - ncurses-devel
+    - openssl-devel
+    - openssl-libs
+    - pkgconfig
+    - readline-devel
+    - sqlite-devel
+    - tcl-devel
+    - tix-devel
+    - tk
+    - tk-devel
+    - zlib-devel
+
+- name: Download and unarchive source | Python 2.6
+  unarchive:
+    src: https://www.python.org/ftp/python/2.6.9/Python-2.6.9.tgz
+    dest: /root
+    remote_src: yes
+
+- name: Configure source | Python 2.6
+  command: |
+    ./configure --enable-ipv6 --enable-unicode=ucs4 --enable-shared --with-system-ffi
+  args:
+    chdir: /root/Python-2.6.9
+    creates: config.status
+
+- name: Run make install | Python 2.6
+  make:
+    chdir: /root/Python-2.6.9
+    target: install
+  environment:
+    CFLAGS: -D_GNU_SOURCE -fPIC -fwrapv
+    CXXFLAGS: -D_GNU_SOURCE -fPIC -fwrapv
+    OPT: -D_GNU_SOURCE -fPIC -fwrapv
+    LINKCC: gcc
+    CC: gcc
+      
+- name: Delete source | Python 2.6
+  file:
+    path: /root/Python-2.6.9
+    state: absent
+
+- name: Download get-pip.py
+  get_url:
+    url: https://bootstrap.pypa.io/get-pip.py
+    dest: /root/get-pip.py
+
+- name: Add dynamic linker path | Python 2.6
+  lineinfile:
+    path: /etc/ld.so.conf.d/python-2.6.conf
+    create: yes
+    owner: root
+    group: root
+    mode: 0644
+    line: /usr/local/lib
+  register: ldconf
+
+- name: Run ldconfig
+  command: /sbin/ldconfig
+  when: ldconf|changed
+
+- name: Install pip | Python 2.6
+  command: /usr/local/bin/python2.6 /root/get-pip.py
+
+- name: Delete get-pip.py script
+  file:
+    path: /root/get-pip.py
+    state: absent
