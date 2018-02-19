@@ -15,6 +15,17 @@ container runs the following processes:
 * mariadb (MySQL compatible database)
 * supervisord (A process control system)
 
+It also has the following Python versions installed, including the
+corresponding -devel and -pip packages:
+
+* Python 2.6
+* Python 2.7
+* Python 3.4
+* Python 3.5
+* Python 3.6
+
+> **Note**: Python 2.6 is installed from source.
+
 ## Usage
 
 There are multiple
@@ -74,7 +85,7 @@ build the Dockerfile:
 
 ```
 git clone https://github.com/giovtorres/docker-centos7-slurm
-git checkout 17.02.3
+git checkout <tag>
 docker build -t docker-centos7-slurm .
 ```
 
@@ -118,4 +129,3 @@ I use this container to get access to the Slurm headers and libraries for
 
 > **Important Note**: This image is used for testing and development.  It is
 > not suited for any production use.
-
