@@ -92,7 +92,7 @@ RUN pip2.6 install Cython nose \
 RUN set -x \
     && git clone https://github.com/SchedMD/slurm.git \
     && pushd slurm \
-    && git checkout tags/$SLURM_TAG -b slurm-17-11-6-1 \
+    && git checkout tags/$SLURM_TAG -b $SLURM_TAG \
     && ./configure --enable-debug --enable-front-end --prefix=/usr \
        --sysconfdir=/etc/slurm --with-mysql_config=/usr/bin \
        --libdir=/usr/lib64 \
