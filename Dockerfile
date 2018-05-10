@@ -6,7 +6,7 @@ LABEL org.label-schema.vcs-url="https://github.com/giovtorres/docker-centos7-slu
       org.label-schema.description="Slurm All-in-one Docker container on CentOS 7" \
       maintainer="Giovanni Torres"
 
-ARG SLURM_TAG=17-11-6-1
+ARG SLURM_TAG=slurm-17-11-6-1
 
 RUN yum makecache fast \
     && yum -y install epel-release \
@@ -65,7 +65,7 @@ RUN yum makecache fast \
 RUN set -x \
     && wget https://www.python.org/ftp/python/2.6.9/Python-2.6.9.tgz \
     && tar xzf Python-2.6.9.tgz \
-    && cd Python-2.6.9 \
+    && pushd Python-2.6.9 \
     && export CFLAGS="-D_GNU_SOURCE -fPIC -fwrapv" \
     && export CXXFLAGS="-D_GNU_SOURCE -fPIC -fwrapv" \
     && export OPT="-D_GNU_SOURCE -fPIC -fwrapv" \
@@ -74,12 +74,12 @@ RUN set -x \
     && ./configure --enable-ipv6 --enable-unicode=ucs4 --enable-shared --with-system-ffi \
     && make install \
     && unset CFLAGS CXXFLAGS OPT LINKCC CC \
-    && cd .. \
+    && popd \
     && rm -rf Python-2.6.9 \
     && echo "/usr/local/lib" >> /etc/ld.so.conf.d/python-2.6.conf \
     && chmod 0644 /etc/ld.so.conf.d/python-2.6.conf \
     && /sbin/ldconfig \
-    && wget https://bootstrap.pypa.io/get-pip.py \
+    && wget https://bootstrap.pypa.io/2.6/get-pip.py \
     && /usr/local/bin/python2.6 get-pip.py \
     && rm -f get-pip.py
 
@@ -92,7 +92,7 @@ RUN pip2.6 install Cython nose \
 RUN set -x \
     && git clone https://github.com/SchedMD/slurm.git \
     && pushd slurm \
-    && git checkout tags/$SLURM_TAG -b $SLURM_TAG \
+    && git checkout tags/$SLURM_TAG \
     && ./configure --enable-debug --enable-front-end --prefix=/usr \
        --sysconfdir=/etc/slurm --with-mysql_config=/usr/bin \
        --libdir=/usr/lib64 \
