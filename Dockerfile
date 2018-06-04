@@ -6,7 +6,7 @@ LABEL org.label-schema.vcs-url="https://github.com/giovtorres/docker-centos7-slu
       org.label-schema.description="Slurm All-in-one Docker container on CentOS 7" \
       maintainer="Giovanni Torres"
 
-ARG SLURM_TAG=slurm-17-11-6-1
+ARG SLURM_TAG=slurm-17-11-7-1
 
 RUN yum makecache fast \
     && yum -y install epel-release \
