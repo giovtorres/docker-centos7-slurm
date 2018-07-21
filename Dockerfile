@@ -81,7 +81,7 @@ RUN set -x \
     && /sbin/ldconfig \
     && wget https://bootstrap.pypa.io/2.6/get-pip.py \
     && /usr/local/bin/python2.6 get-pip.py \
-    && rm -f get-pip.py
+    && rm -f get-pip.py Python-2.6.9.tgz
 
 RUN pip2.6 install Cython nose \
     && pip2.7 install Cython nose \
