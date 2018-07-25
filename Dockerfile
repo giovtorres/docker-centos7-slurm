@@ -38,7 +38,6 @@ RUN yum makecache fast \
         psmisc \
         python-devel \
         python-pip \
-        python-sphinx \
         python34 \
         python34-devel \
         python34-pip \
