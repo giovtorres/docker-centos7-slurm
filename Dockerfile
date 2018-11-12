@@ -114,6 +114,18 @@ RUN set -ex \
         /var/log/slurm \
     && /sbin/create-munge-key
 
+RUN set -ex \
+    && echo "syntax on"           >> $HOME/.vimrc \
+    && echo "set tabstop=4"       >> $HOME/.vimrc \
+    && echo "set softtabstop=4"   >> $HOME/.vimrc \
+    && echo "set shiftwidth=4"    >> $HOME/.vimrc \
+    && echo "set expandtab"       >> $HOME/.vimrc \
+    && echo "set autoindent"      >> $HOME/.vimrc \
+    && echo "set fileformat=unix" >> $HOME/.vimrc \
+    && echo "set encoding=utf-8"  >> $HOME/.vimrc \
+    && git config --global color.ui auto \
+    && git config --global push.default simple
+
 COPY slurm.conf /etc/slurm/slurm.conf
 COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
 COPY supervisord.conf /etc/
