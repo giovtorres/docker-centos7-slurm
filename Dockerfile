@@ -9,7 +9,8 @@ LABEL org.label-schema.vcs-url="https://github.com/giovtorres/docker-centos7-slu
 ARG SLURM_TAG=slurm-18-08-3-1
 ARG PYTHON_VERSIONS="2.6 2.7 3.4 3.5 3.6"
 
-RUN yum makecache fast \
+RUN set -ex \
+    && yum makecache fast \
     && yum -y install epel-release \
     && yum -y install \
         autoconf \
@@ -63,7 +64,7 @@ RUN yum makecache fast \
     && yum clean all \
     && rm -rf /var/cache/yum
 
-RUN set -x \
+RUN set -ex \
     && wget https://www.python.org/ftp/python/2.6.9/Python-2.6.9.tgz \
     && tar xzf Python-2.6.9.tgz \
     && pushd Python-2.6.9 \
@@ -86,7 +87,7 @@ RUN set -x \
 
 RUN for version in $PYTHON_VERSIONS; do pip$version install Cython nose; done
 
-RUN set -x \
+RUN set -ex \
     && git clone https://github.com/SchedMD/slurm.git \
     && pushd slurm \
     && git checkout tags/$SLURM_TAG \
