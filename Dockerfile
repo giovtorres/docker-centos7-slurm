@@ -8,6 +8,7 @@ LABEL org.label-schema.vcs-url="https://github.com/giovtorres/docker-centos7-slu
 
 ARG SLURM_TAG=slurm-17-11-13-2
 ARG PYTHON_VERSIONS="2.6 2.7 3.4 3.5 3.6"
+ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
 RUN set -ex \
     && yum makecache fast \
