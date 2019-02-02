@@ -12,6 +12,7 @@ ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
 RUN set -ex \
     && yum makecache fast \
+    && yum -y update \
     && yum -y install epel-release \
     && yum -y install \
         autoconf \
