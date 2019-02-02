@@ -6,7 +6,7 @@ LABEL org.label-schema.vcs-url="https://github.com/giovtorres/docker-centos7-slu
       org.label-schema.description="Slurm All-in-one Docker container on CentOS 7" \
       maintainer="Giovanni Torres"
 
-ARG SLURM_TAG=slurm-17-11-13-2
+ARG SLURM_TAG=slurm-18-08-5-2
 ARG PYTHON_VERSIONS="2.6 2.7 3.4 3.5 3.6"
 ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
