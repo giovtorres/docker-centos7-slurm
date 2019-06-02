@@ -10,6 +10,7 @@ ARG SLURM_TAG=slurm-19-05-0-1
 ARG PYTHON_VERSIONS="2.6 2.7 3.4 3.5 3.6"
 ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
+# Install YUM dependency packages
 RUN set -ex \
     && yum makecache fast \
     && yum -y update \
@@ -66,6 +67,7 @@ RUN set -ex \
     && yum clean all \
     && rm -rf /var/cache/yum
 
+# Install Python 2.6 from source
 RUN set -ex \
     && wget https://www.python.org/ftp/python/2.6.9/Python-2.6.9.tgz \
     && tar xzf Python-2.6.9.tgz \
@@ -87,8 +89,10 @@ RUN set -ex \
     && /usr/local/bin/python2.6 get-pip.py \
     && rm -f get-pip.py Python-2.6.9.tgz
 
+# Install Cython and nose for each version of Python
 RUN for version in $PYTHON_VERSIONS; do pip$version install Cython nose; done
 
+# Compile, build and install Slurm from Git source
 RUN set -ex \
     && git clone https://github.com/SchedMD/slurm.git \
     && pushd slurm \
@@ -116,6 +120,7 @@ RUN set -ex \
         /var/log/slurm \
     && /sbin/create-munge-key
 
+# Set Vim and Git defaults
 RUN set -ex \
     && echo "syntax on"           >> $HOME/.vimrc \
     && echo "set tabstop=4"       >> $HOME/.vimrc \
@@ -128,11 +133,13 @@ RUN set -ex \
     && git config --global color.ui auto \
     && git config --global push.default simple
 
+# Copy Slurm configuration files into the container
 COPY slurm.conf /etc/slurm/slurm.conf
 COPY gres.conf /etc/slurm/gres.conf
 COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
 COPY supervisord.conf /etc/
 
+# Mark externally mounted volumes
 VOLUME ["/var/lib/mysql", "/var/lib/slurmd", "/var/spool/slurmd", "/var/log/slurm"]
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
