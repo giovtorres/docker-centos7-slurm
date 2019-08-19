@@ -1,13 +1,12 @@
 FROM centos:7
 
-LABEL org.label-schema.vcs-url="https://github.com/giovtorres/docker-centos7-slurm" \
-      org.label-schema.docker.cmd="docker run -it -h ernie giovtorres/docker-centos7-slurm:latest" \
-      org.label-schema.name="docker-centos7-slurm" \
-      org.label-schema.description="Slurm All-in-one Docker container on CentOS 7" \
-      maintainer="Giovanni Torres"
+LABEL org.opencontainers.image.source="https://github.com/calebho/docker-centos7-slurm" \
+      org.label-schema.docker.cmd="docker run -it -h ernie calebho/docker-centos7-slurm:latest" \
+      org.opencontainers.image.title="docker-centos7-slurm" \
+      org.opencontainers.image.description="SLURM in CentOS 7 with Python 3.6 and 3.7" \
+      org.opencontainers.image.authors="Caleb Ho"
 
 ARG SLURM_TAG=slurm-19-05-1-2
-ARG PYTHON_VERSIONS="2.6 2.7 3.4 3.5 3.6"
 ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
 # Install YUM dependency packages
@@ -43,9 +42,6 @@ RUN set -ex \
         psmisc \
         python-devel \
         python-pip \
-        python34 \
-        python34-devel \
-        python34-pip \
         readline-devel \
         sqlite-devel \
         tcl-devel \
@@ -55,42 +51,26 @@ RUN set -ex \
         supervisor \
         wget \
         vim-enhanced \
+        zlib \
         zlib-devel \
     && yum -y install https://centos7.iuscommunity.org/ius-release.rpm \
     && yum -y install \
-        python35u \
-        python35u-devel \
-        python35u-pip \
         python36u \
         python36u-devel \
         python36u-pip \
     && yum clean all \
     && rm -rf /var/cache/yum
 
-# Install Python 2.6 from source
+# Build Python 3.7 from source
 RUN set -ex \
-    && wget https://www.python.org/ftp/python/2.6.9/Python-2.6.9.tgz \
-    && tar xzf Python-2.6.9.tgz \
-    && pushd Python-2.6.9 \
-    && export CFLAGS="-D_GNU_SOURCE -fPIC -fwrapv" \
-    && export CXXFLAGS="-D_GNU_SOURCE -fPIC -fwrapv" \
-    && export OPT="-D_GNU_SOURCE -fPIC -fwrapv" \
-    && export LINKCC="gcc" \
-    && export CC="gcc" \
-    && ./configure --enable-ipv6 --enable-unicode=ucs4 --enable-shared --with-system-ffi \
-    && make install \
-    && unset CFLAGS CXXFLAGS OPT LINKCC CC \
-    && popd \
-    && rm -rf Python-2.6.9 \
-    && echo "/usr/local/lib" >> /etc/ld.so.conf.d/python-2.6.conf \
-    && chmod 0644 /etc/ld.so.conf.d/python-2.6.conf \
-    && /sbin/ldconfig \
-    && wget https://bootstrap.pypa.io/2.6/get-pip.py \
-    && /usr/local/bin/python2.6 get-pip.py \
-    && rm -f get-pip.py Python-2.6.9.tgz
-
-# Install Cython and nose for each version of Python
-RUN for version in $PYTHON_VERSIONS; do pip$version install Cython nose; done
+    && cd /usr/src \
+    && wget https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz \
+    && tar xzf Python-3.7.4.tgz \
+    && cd Python-3.7.4 \
+    && ./configure --enable-optimizations \
+    && make altinstall \
+    && rm /usr/src/Python-3.7.4.tgz \
+    && python3.7 -V
 
 # Compile, build and install Slurm from Git source
 RUN set -ex \
@@ -119,19 +99,6 @@ RUN set -ex \
         /var/lib/slurmd \
         /var/log/slurm \
     && /sbin/create-munge-key
-
-# Set Vim and Git defaults
-RUN set -ex \
-    && echo "syntax on"           >> $HOME/.vimrc \
-    && echo "set tabstop=4"       >> $HOME/.vimrc \
-    && echo "set softtabstop=4"   >> $HOME/.vimrc \
-    && echo "set shiftwidth=4"    >> $HOME/.vimrc \
-    && echo "set expandtab"       >> $HOME/.vimrc \
-    && echo "set autoindent"      >> $HOME/.vimrc \
-    && echo "set fileformat=unix" >> $HOME/.vimrc \
-    && echo "set encoding=utf-8"  >> $HOME/.vimrc \
-    && git config --global color.ui auto \
-    && git config --global push.default simple
 
 # Copy Slurm configuration files into the container
 COPY slurm.conf /etc/slurm/slurm.conf
