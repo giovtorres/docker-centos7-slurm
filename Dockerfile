@@ -1,9 +1,9 @@
 FROM centos:7
 
-LABEL org.label-schema.vcs-url="https://github.com/giovtorres/docker-centos7-slurm" \
+LABEL org.opencontainers.image.source="https://github.com/giovtorres/docker-centos7-slurm" \
+      org.opencontainers.image.title="docker-centos7-slurm" \
+      org.opencontainers.image.description="Slurm All-in-one Docker container on CentOS 7" \
       org.label-schema.docker.cmd="docker run -it -h ernie giovtorres/docker-centos7-slurm:latest" \
-      org.label-schema.name="docker-centos7-slurm" \
-      org.label-schema.description="Slurm All-in-one Docker container on CentOS 7" \
       maintainer="Giovanni Torres"
 
 ARG SLURM_TAG=slurm-19-05-1-2
