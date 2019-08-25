@@ -21,8 +21,8 @@ function install_from_source ()
     PYURL="https://www.python.org/ftp/python/${PYVER}/Python-${PYVER}.tgz"
 
     CONFIGURE_ARGS=(
-        ["2.7"]="--enable-unicode=ucs4"
-        ["3.7"]="--with-ensurepip=install --enable-optimizations"
+        ["2.6"]="--enable-unicode=ucs4"
+        ["3.7"]="--enable-optimizations --with-ensurepip=install"
     )
 
     wget "${PYURL}"
@@ -35,10 +35,10 @@ function install_from_source ()
     export LINKCC="gcc"
     export CC="gcc"
 
-    ./configure --enable-ipv6 --enable-shared --with-system-ffi "${CONFIGURE_ARGS[$PYTHON_VERSION]}"
+    ./configure --enable-ipv6 --enable-shared --with-system-ffi ${CONFIGURE_ARGS[$PYTHON_VERSION]}
 
     case "${PYTHON_VERSION}" in
-        2.7) make install ;;
+        2.6) make install ;;
         3.7) make altinstall ;;
     esac
 
