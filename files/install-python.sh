@@ -11,29 +11,53 @@ function cleanup ()
 
 trap "cleanup" TERM EXIT
 
-function install_python_26 ()
+function install_from_source ()
 {
-    wget https://www.python.org/ftp/python/2.6.9/Python-2.6.9.tgz
-    tar xzf Python-2.6.9.tgz
-    pushd Python-2.6.9
+    declare -A VERSIONS
+    declare -A CONFIGURE_ARGS
+
+    VERSIONS=( ["2.6"]="2.6.9" ["3.7"]="3.7.4" )
+    PYVER="${VERSIONS[$PYTHON_VERSION]}"
+    PYURL="https://www.python.org/ftp/python/${PYVER}/Python-${PYVER}.tgz"
+
+    CONFIGURE_ARGS=(
+        ["2.7"]="--enable-unicode=ucs4"
+        ["3.7"]="--with-ensurepip=install --enable-optimizations"
+    )
+
+    wget "${PYURL}"
+    tar xzf "Python-${PYVER}.tgz"
+    pushd Python-"${PYVER}"
+
     export CFLAGS="-D_GNU_SOURCE -fPIC -fwrapv"
     export CXXFLAGS="-D_GNU_SOURCE -fPIC -fwrapv"
     export OPT="-D_GNU_SOURCE -fPIC -fwrapv"
     export LINKCC="gcc"
     export CC="gcc"
-    ./configure --enable-ipv6 --enable-unicode=ucs4 --enable-shared --with-system-ffi
-    make install
+
+    ./configure --enable-ipv6 --enable-shared --with-system-ffi "${CONFIGURE_ARGS[$PYTHON_VERSION]}"
+
+    case "${PYTHON_VERSION}" in
+        2.7) make install ;;
+        3.7) make altinstall ;;
+    esac
+
     unset CFLAGS CXXFLAGS OPT LINKCC CC
     popd
-    rm -rf Python-2.6.9
-    echo "/usr/local/lib" >> /etc/ld.so.conf.d/python-2.6.conf
-    chmod 0644 /etc/ld.so.conf.d/python-2.6.conf
-    /sbin/ldconfig
-    wget https://bootstrap.pypa.io/2.6/get-pip.py
-    /usr/local/bin/python2.6 get-pip.py
-    rm -f get-pip.py Python-2.6.9.tgz
+    rm -rf "Python-${PYVER}"
 
-    pip2.6 install Cython nose
+    echo "/usr/local/lib" > /etc/ld.so.conf.d/python.conf
+    chmod 0644 /etc/ld.so.conf.d/python.conf
+    /sbin/ldconfig
+
+    if [ "${PYTHON_VERSION}" == "2.6" ]
+    then
+        wget https://bootstrap.pypa.io/2.6/get-pip.py
+        /usr/local/bin/python2.6 get-pip.py
+        rm -f get-pip.py Python-2.6.9.tgz
+    fi
+
+    "pip${PYTHON_VERSION}" install Cython nose
 }
 
 function centos_install_ius ()
@@ -46,13 +70,14 @@ printf "Installing Python %s\n" "${PYTHON_VERSION}"
 yum makecache fast
 
 case "${PYTHON_VERSION}" in
-    2.6) install_python_26 ;;
+    2.6|3.7) install_from_source ;;
     2.7) yum -y install python-{devel,pip} ;;
     3.4) yum -y install python34{,-devel,-pip} ;;
     3.5|3.6)
         centos_install_ius
         yum -y install python"${PYTHON_VERSION//.}"u{,-devel,-pip}
         ;;
+
     *)
         echo "Python version not supported!"
         exit 1
