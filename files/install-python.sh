@@ -14,16 +14,15 @@ trap "cleanup" TERM EXIT
 function install_from_source ()
 {
     declare -A VERSIONS
-    declare -A CONFIGURE_ARGS
 
     VERSIONS=( ["2.6"]="2.6.9" ["3.7"]="3.7.4" )
     PYVER="${VERSIONS[$PYTHON_VERSION]}"
     PYURL="https://www.python.org/ftp/python/${PYVER}/Python-${PYVER}.tgz"
 
-    CONFIGURE_ARGS=(
-        ["2.6"]="--enable-unicode=ucs4"
-        ["3.7"]="--enable-optimizations --with-ensurepip=install"
-    )
+    case "${PYTHON_VERSION}" in
+        2.6) BUILD_ARGS=("--enable-unicode=ucs4") ;;
+        3.7) BUILD_ARGS=("--enable-optimizations" "--with-ensurepip=install") ;;
+    esac
 
     wget "${PYURL}"
     tar xzf "Python-${PYVER}.tgz"
@@ -35,7 +34,7 @@ function install_from_source ()
     export LINKCC="gcc"
     export CC="gcc"
 
-    ./configure --enable-ipv6 --enable-shared --with-system-ffi ${CONFIGURE_ARGS[$PYTHON_VERSION]}
+    ./configure --enable-ipv6 --enable-shared --with-system-ffi "${BUILD_ARGS[@]}"
 
     case "${PYTHON_VERSION}" in
         2.6) make install ;;

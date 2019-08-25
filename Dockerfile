@@ -51,6 +51,7 @@ RUN set -ex \
         supervisor \
         wget \
         vim-enhanced \
+        xz-devel \
         zlib-devel \
     && yum clean all \
     && rm -rf /var/cache/yum
