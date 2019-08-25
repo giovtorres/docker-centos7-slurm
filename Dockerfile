@@ -7,7 +7,7 @@ LABEL org.opencontainers.image.source="https://github.com/giovtorres/docker-cent
       maintainer="Giovanni Torres"
 
 ARG SLURM_TAG=slurm-19-05-1-2
-ARG PYTHON_VERSIONS="2.6 2.7 3.4 3.5 3.6"
+ARG PYTHON_VERSIONS="2.6 2.7 3.4 3.5 3.6 3.7"
 
 ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
@@ -51,6 +51,7 @@ RUN set -ex \
         supervisor \
         wget \
         vim-enhanced \
+        xz-devel \
         zlib-devel \
     && yum clean all \
     && rm -rf /var/cache/yum
