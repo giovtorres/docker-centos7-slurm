@@ -21,8 +21,8 @@ function install_from_source ()
     PYURL="https://www.python.org/ftp/python/${PYVER}/Python-${PYVER}.tgz"
 
     CONFIGURE_ARGS=(
-        ["2.6"]="--enable-unicode=ucs4"
-        ["3.7"]="--enable-optimizations --with-ensurepip=install"
+        ["2.7"]="--enable-unicode=ucs4"
+        ["3.7"]="--with-ensurepip=install --enable-optimizations"
     )
 
     wget "${PYURL}"
