@@ -23,8 +23,7 @@ corresponding -devel and -pip packages:
 * Python 3.4
 * Python 3.5
 * Python 3.6
-
-> **Note**: Python 2.6 is installed from source.
+* Python 3.7
 
 ## Usage
 
@@ -37,9 +36,9 @@ docker pull giovtorres/docker-centos7-slurm:latest
 docker run -it -h ernie giovtorres/docker-centos7-slurm:latest
 ```
 
-The above command will drop you into a bash shell inside the container.
-Supervisord is the process manager.  To view the status of all the processes,
-run:
+The above command will drop you into a bash shell inside the container. Tini
+is responsible for `init` and supervisord is the process control system . To
+view the status of all the processes, run:
 
 ```
 [root@ernie /]# supervisorctl status
@@ -79,7 +78,9 @@ PartitionName=normal
 
 ## Building
 
-There are multiple versions of Slurm available, each in its own tag.  To build
+### Using Existing Tags
+
+There are multiple versions of Slurm available, each with its own tag.  To build
 a specific version of Slurm, checkout the tag that matches that version and
 build the Dockerfile:
 
@@ -89,11 +90,31 @@ git checkout <tag>
 docker build -t docker-centos7-slurm .
 ```
 
+### Using Build Args
+
+You can use docker's `--build-arg` option to customize the version of Slurm
+and the version(s) of Python at build time.
+
+To specify the version of Slurm, assign a valid Slurm tag to the `SLURM_TAG`
+build argument:
+
+```
+docker build --build-arg SLURM_TAG="slurm-19-05-1-2" -t docker-centos7-slurm:19.05.1-2
+```
+
+To specify the version(s) of Python to include in the container, specify a
+space-delimited string of Python versions using the `PYTHON_VERSIONS` build
+argument:
+
+```
+docker build --build-arg PYTHON_VERSIONS="3.6 3.7" -t docker-centos7-slurm:py3
+```
+
 ## Using docker-compose
 
 The included docker-compose file will run the cluster container in the
 background.  The docker-compose file uses data volumes to store the slurm state
-between container runs.  To start the cluster container, run: 
+between container runs.  To start the cluster container, run:
 
     docker-compose up -d
 
@@ -121,11 +142,3 @@ process and stopping the container.
 To stop the cluster container, run:
 
     docker-compose down
-
-## Notes
-
-I use this container to get access to the Slurm headers and libraries for
-[PySlurm](https://github.com/PySlurm/pyslurm) development.
-
-> **Important Note**: This image is used for testing and development.  It is
-> not suited for any production use.
