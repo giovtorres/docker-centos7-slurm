@@ -7,8 +7,7 @@ LABEL org.opencontainers.image.source="https://github.com/giovtorres/docker-cent
       maintainer="Giovanni Torres"
 
 ARG SLURM_TAG=slurm-19-05-1-2
-ARG PYTHON_VERSIONS="2.6 2.7 3.4 3.5 3.6 3.7"
-
+ARG PYTHON_VERSIONS="2.7 3.4 3.5 3.6"
 ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
 # Install common YUM dependency packages
