@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.source="https://github.com/giovtorres/docker-cent
       org.label-schema.docker.cmd="docker run -it -h ernie giovtorres/docker-centos7-slurm:latest" \
       maintainer="Giovanni Torres"
 
-ARG SLURM_TAG=slurm-19-05-1-2
+ARG SLURM_TAG=slurm-19-05-2-1
 ARG PYTHON_VERSIONS="2.7 3.4 3.5 3.6"
 ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
