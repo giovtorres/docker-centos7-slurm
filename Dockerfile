@@ -1,4 +1,4 @@
-FROM centos:7
+FROM centos:7.7.1908
 
 LABEL org.opencontainers.image.source="https://github.com/giovtorres/docker-centos7-slurm" \
       org.opencontainers.image.title="docker-centos7-slurm" \
@@ -6,8 +6,6 @@ LABEL org.opencontainers.image.source="https://github.com/giovtorres/docker-cent
       org.label-schema.docker.cmd="docker run -it -h ernie giovtorres/docker-centos7-slurm:latest" \
       maintainer="Giovanni Torres"
 
-ARG SLURM_TAG=slurm-19-05-2-1
-ARG PYTHON_VERSIONS="2.7 3.4 3.5 3.6"
 ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
 # Install common YUM dependency packages
@@ -21,6 +19,7 @@ RUN set -ex \
         bzip2 \
         bzip2-devel \
         file \
+        iproute \
         gcc \
         gcc-c++ \
         gdbm-devel \
@@ -58,11 +57,13 @@ RUN set -ex \
 COPY files/install-python.sh /tmp
 
 # Install Python versions
+ARG PYTHON_VERSIONS="2.7 3.5 3.6 3.7 3.8"
 RUN set -ex \
     && for version in ${PYTHON_VERSIONS}; do /tmp/install-python.sh "$version"; done \
     && rm -f /tmp/install-python.sh
 
 # Compile, build and install Slurm from Git source
+ARG SLURM_TAG=slurm-19-05-2-1
 RUN set -ex \
     && git clone https://github.com/SchedMD/slurm.git \
     && pushd slurm \
@@ -115,7 +116,7 @@ VOLUME ["/var/lib/mysql", "/var/lib/slurmd", "/var/spool/slurmd", "/var/log/slur
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 # Add Tini
-ENV TINI_VERSION v0.18.0
+ARG TINI_VERSION=v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini
 

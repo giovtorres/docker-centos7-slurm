@@ -2,15 +2,15 @@
 
 if [ ! -f "/var/lib/mysql/ibdata1" ]; then
     echo "- Initializing database"
-    /usr/bin/mysql_install_db &> /dev/null
-    echo "- Database initialized"
+    /usr/bin/mysql_install_db --force &> /dev/null
+
     echo "- Updating MySQL directory permissions"
     chown -R mysql:mysql /var/lib/mysql
     chown -R mysql:mysql /var/run/mariadb
 fi
 
 if [ ! -d "/var/lib/mysql/slurm_acct_db" ]; then
-    /usr/bin/mysqld_safe --datadir='/var/lib/mysql' &
+    /usr/bin/mysqld_safe --datadir="/var/lib/mysql" &
 
     for count in {30..0}; do
         if echo "SELECT 1" | mysql &> /dev/null; then
