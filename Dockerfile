@@ -63,7 +63,7 @@ RUN set -ex \
     && rm -f /tmp/install-python.sh
 
 # Compile, build and install Slurm from Git source
-ARG SLURM_TAG=slurm-19-05-3-2
+ARG SLURM_TAG=slurm-19-05-4-1
 RUN set -ex \
     && git clone https://github.com/SchedMD/slurm.git \
     && pushd slurm \
