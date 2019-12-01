@@ -44,12 +44,6 @@ def test_slurm_user_group_exists(host):
     assert host.user("slurm").group == "slurm"
 
 
-@pytest.mark.parametrize("filename", ["slurm.conf", "slurmdbd.conf"])
-def test_slurm_config_exists(host, filename):
-    assert host.file(f"/etc/slurm/{filename}").exists
-    assert host.file(f"/etc/slurm/{filename}").is_file
-
-
 @pytest.mark.parametrize("version, semver", [
     ("3.5", "3.5.6"),
     ("3.6", "3.6.8"),
@@ -60,6 +54,29 @@ def test_python_is_installed(host, version, semver):
     cmd = host.run(f"python{version} --version")
     assert semver in cmd.stdout
 
+
 def test_mariadb_is_listening(host, Slow):
     Slow(lambda: host.socket("tcp://3306").is_listening)
 
+
+@pytest.mark.parametrize("filename", ["slurm.conf", "slurmdbd.conf"])
+def test_slurm_config_exists(host, filename):
+    assert host.file(f"/etc/slurm/{filename}").exists
+    assert host.file(f"/etc/slurm/{filename}").is_file
+
+
+def test_slurmd_is_listening(host, Slow):
+    Slow(lambda: host.socket("tcp://6817").is_listening)
+
+
+def test_slurmdbd_is_listening(host, Slow):
+    Slow(lambda: host.socket("tcp://6818").is_listening)
+
+
+def test_slurmctld_is_listening(host, Slow):
+    Slow(lambda: host.socket("tcp://6819").is_listening)
+
+
+def test_slurmd_version(host):
+    cmd = host.run("scontrol show config | grep SLURM_VERSION")
+    assert "19.05.3" in cmd.stdout
