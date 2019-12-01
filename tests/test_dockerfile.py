@@ -79,4 +79,4 @@ def test_slurmctld_is_listening(host, Slow):
 
 def test_slurmd_version(host):
     cmd = host.run("scontrol show config | grep SLURM_VERSION")
-    assert "19.05.3" in cmd.stdout
+    assert "19.05.4" in cmd.stdout
