@@ -1,11 +1,41 @@
 import subprocess
+import time
 
 import pytest
 import testinfra
 
 
+@pytest.fixture(scope="session")
+def host(request):
+    test_image = "docker-centos7-slurm:spec-test"
+    subprocess.check_call(["docker", "build", "-t", test_image, "."])
+    docker_id = subprocess.check_output(
+        ["docker", "run", "-d", "-it", "-h", "ernie", test_image]
+    ).decode().strip()
+    yield testinfra.get_host("docker://" + docker_id)
+    subprocess.check_call(["docker", "rm", "-f", docker_id])
+
+
+@pytest.fixture
+def Slow():
+    def slow(check, timeout=30):
+        timeout_at = time.time() + timeout
+
+        while True:
+            try:
+                assert check()
+            except AssertionError as e:
+                if time.time() < timeout_at:
+                    time.sleep(1)
+                else:
+                    raise e
+            else:
+                return
+    return slow
+
+
 def test_tini_is_installed(host):
-    cmd = host.run("/tini --version")
+    cmd = host.run("tini --version")
     assert "0.18.0" in cmd.stdout
 
 
@@ -30,6 +60,6 @@ def test_python_is_installed(host, version, semver):
     cmd = host.run(f"python{version} --version")
     assert semver in cmd.stdout
 
-def test_mariadb_is_listening(host):
-    assert host.socket("tcp://3306").is_listening
+def test_mariadb_is_listening(host, Slow):
+    Slow(lambda: host.socket("tcp://3306").is_listening)
 

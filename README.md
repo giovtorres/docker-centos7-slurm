@@ -30,7 +30,7 @@ There are multiple
 [tags](https://hub.docker.com/r/giovtorres/docker-centos7-slurm/tags/)
 available.  To use the latest available image, run:
 
-```
+```shell
 docker pull giovtorres/docker-centos7-slurm:latest
 docker run -it -h ernie giovtorres/docker-centos7-slurm:latest
 ```
@@ -39,7 +39,7 @@ The above command will drop you into a bash shell inside the container. Tini
 is responsible for `init` and supervisord is the process control system . To
 view the status of all the processes, run:
 
-```
+```shell
 [root@ernie /]# supervisorctl status
 munged                           RUNNING   pid 23, uptime 0:02:35
 mysqld                           RUNNING   pid 24, uptime 0:02:35
@@ -55,14 +55,14 @@ hostnames match.
 
 You can run the usual slurm commands:
 
-```
+```shell
 [root@ernie /]# sinfo
 PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
 normal*      up 5-00:00:00      5   idle c[1-5]
 debug        up 5-00:00:00      5   idle c[6-10]
 ```
 
-```
+```shell
 [root@ernie /]# scontrol show partition
 PartitionName=normal
    AllowGroups=ALL AllowAccounts=ALL AllowQos=ALL
@@ -83,7 +83,7 @@ There are multiple versions of Slurm available, each with its own tag.  To build
 a specific version of Slurm, checkout the tag that matches that version and
 build the Dockerfile:
 
-```
+```shell
 git clone https://github.com/giovtorres/docker-centos7-slurm
 git checkout <tag>
 docker build -t docker-centos7-slurm .
@@ -97,7 +97,7 @@ and the version(s) of Python at build time.
 To specify the version of Slurm, assign a valid Slurm tag to the `SLURM_TAG`
 build argument:
 
-```
+```shell
 docker build --build-arg SLURM_TAG="slurm-19-05-1-2" -t docker-centos7-slurm:19.05.1-2
 ```
 
@@ -105,7 +105,7 @@ To specify the version(s) of Python to include in the container, specify a
 space-delimited string of Python versions using the `PYTHON_VERSIONS` build
 argument:
 
-```
+```shell
 docker build --build-arg PYTHON_VERSIONS="3.6 3.7" -t docker-centos7-slurm:py3
 ```
 
@@ -115,29 +115,47 @@ The included docker-compose file will run the cluster container in the
 background.  The docker-compose file uses data volumes to store the slurm state
 between container runs.  To start the cluster container, run:
 
-    docker-compose up -d
+```shell
+docker-compose up -d
+```
 
 To execute commands in the container, use `docker exec`:
 
-    docker exec dockercentos7slurm_slurm_1 sinfo
-    PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
-    normal*      up 5-00:00:00      5   idle c[1-5]
-    debug        up 5-00:00:00      5   idle c[6-10]
+```shell
+docker exec dockercentos7slurm_slurm_1 sinfo
+PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
+normal*      up 5-00:00:00      5   idle c[1-5]
+debug        up 5-00:00:00      5   idle c[6-10]
 
-    docker exec dockercentos7slurm_slurm_1 sbatch --wrap="sleep 10"
-    Submitted batch job 27
+docker exec dockercentos7slurm_slurm_1 sbatch --wrap="sleep 10"
+Submitted batch job 27
 
-    docker exec dockercentos7slurm_slurm_1 squeue
-             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
-                27    normal     wrap     root  R       0:07      1 c1
+docker exec dockercentos7slurm_slurm_1 squeue
+            JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+            27    normal     wrap     root  R       0:07      1 c1
+```
 
 To attach to the bash shell inside the running container, run:
 
-    docker attach dockercentos7slurm_slurm_1
+```shell
+docker attach dockercentos7slurm_slurm_1
+```
 
 Press `Ctrl-p,Ctrl-q` to detach from the container without killing the bash
 process and stopping the container.
 
 To stop the cluster container, run:
 
-    docker-compose down
+```shell
+docker-compose down
+```
+
+## Testing Locally
+
+[Testinfra](https://testinfra.readthedocs.io/en/latest/index.html) is used to
+build and run a Docker container test fixture. Run the tests with
+[pytest](https://docs.pytest.org/en/latest/):
+
+```shell
+pytest -v
+```
