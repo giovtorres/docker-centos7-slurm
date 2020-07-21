@@ -1,12 +1,8 @@
 FROM centos:7.7.1908
 
-LABEL org.opencontainers.image.source="https://github.com/giovtorres/docker-centos7-slurm" \
-      org.opencontainers.image.title="docker-centos7-slurm" \
-      org.opencontainers.image.description="Slurm All-in-one Docker container on CentOS 7" \
-      org.label-schema.docker.cmd="docker run -it -h ernie giovtorres/docker-centos7-slurm:latest" \
-      maintainer="Giovanni Torres"
-
 ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
+ARG SBT_VERSION 1.3.13
+ARG SLURM_VERSION 19-05-4-1
 
 # Install common YUM dependency packages
 RUN set -ex \
@@ -26,6 +22,7 @@ RUN set -ex \
         git \
         glibc-devel \
         gmp-devel \
+	java-1.8.0-openjdk-devel \
         libffi-devel \
         libGL-devel \
         libX11-devel \
@@ -40,6 +37,7 @@ RUN set -ex \
         perl \
         pkconfig \
         psmisc \
+	python3{,-devel,-pip} \
         readline-devel \
         sqlite-devel \
         tcl-devel \
@@ -51,19 +49,16 @@ RUN set -ex \
         vim-enhanced \
         xz-devel \
         zlib-devel \
+    && wget http://dl.bintray.com/sbt/rpm/sbt-$SBT_VERSION.rpm \
+    && yum install -y sbt-$SBT_VERSION.rpm \
     && yum clean all \
     && rm -rf /var/cache/yum
 
-COPY files/install-python.sh /tmp
-
-# Install Python versions
-ARG PYTHON_VERSIONS="2.7 3.5 3.6 3.7 3.8"
-RUN set -ex \
-    && for version in ${PYTHON_VERSIONS}; do /tmp/install-python.sh "$version"; done \
-    && rm -f /tmp/install-python.sh
+# Fetch sbt artifacts
+RUN sbt about
 
 # Compile, build and install Slurm from Git source
-ARG SLURM_TAG=slurm-19-05-4-1
+ARG SLURM_TAG=slurm-$SLURM_VERSION
 RUN set -ex \
     && git clone https://github.com/SchedMD/slurm.git \
     && pushd slurm \
@@ -90,19 +85,6 @@ RUN set -ex \
         /var/lib/slurmd \
         /var/log/slurm \
     && /sbin/create-munge-key
-
-# Set Vim and Git defaults
-RUN set -ex \
-    && echo "syntax on"           >> $HOME/.vimrc \
-    && echo "set tabstop=4"       >> $HOME/.vimrc \
-    && echo "set softtabstop=4"   >> $HOME/.vimrc \
-    && echo "set shiftwidth=4"    >> $HOME/.vimrc \
-    && echo "set expandtab"       >> $HOME/.vimrc \
-    && echo "set autoindent"      >> $HOME/.vimrc \
-    && echo "set fileformat=unix" >> $HOME/.vimrc \
-    && echo "set encoding=utf-8"  >> $HOME/.vimrc \
-    && git config --global color.ui auto \
-    && git config --global push.default simple
 
 # Copy Slurm configuration files into the container
 COPY files/slurm/slurm.conf /etc/slurm/slurm.conf
