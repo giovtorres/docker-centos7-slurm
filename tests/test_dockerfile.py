@@ -45,10 +45,7 @@ def test_slurm_user_group_exists(host):
 
 
 @pytest.mark.parametrize("version, semver", [
-    ("3.5", "3.5.6"),
     ("3.6", "3.6.8"),
-    ("3.7", "3.7.5"),
-    ("3.8", "3.8.0")
 ])
 def test_python_is_installed(host, version, semver):
     cmd = host.run(f"python{version} --version")
