@@ -1,8 +1,8 @@
 FROM centos:7.7.1908
 
 ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
-ARG SBT_VERSION 1.3.13
-ARG SLURM_VERSION 19-05-4-1
+ARG SBT_VERSION=1.3.13
+ARG SLURM_VERSION=19-05-4-1
 
 # Install common YUM dependency packages
 RUN set -ex \
