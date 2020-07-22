@@ -1,11 +1,8 @@
 # Slurm on CentOS 7 Docker Image
 
-[![Docker Build Status](https://img.shields.io/docker/build/giovtorres/docker-centos7-slurm.svg)](https://hub.docker.com/r/giovtorres/docker-centos7-slurm/builds/)
-[![Docker Automated build](https://img.shields.io/docker/automated/giovtorres/docker-centos7-slurm.svg)](https://hub.docker.com/r/giovtorres/docker-centos7-slurm/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/giovtorres/docker-centos7-slurm.svg)](https://hub.docker.com/r/giovtorres/docker-centos7-slurm/)
-[![](https://images.microbadger.com/badges/image/giovtorres/docker-centos7-slurm.svg)](https://microbadger.com/images/giovtorres/docker-centos7-slurm "Get your own image badge on microbadger.com")
+[![Build Status](https://travis-ci.com/NOAA-GSD/docker-centos7-slurm.svg?branch=develop)](https://travis-ci.com/NOAA-GSD/docker-centos7-slurm)
 
-This is an all-in-one [Slurm](https://slurm.schedmd.com/) installation.  This
+This is an all-in-one [Slurm](https://slurm.schedmd.com/) installation (forked from [giovtorres/docker-centos7-slurm](https://github.com/giovtorres/docker-centos7-slurm)).  This
 container runs the following processes:
 
 * slurmd (The compute node daemon for Slurm)
@@ -15,24 +12,18 @@ container runs the following processes:
 * mariadb (MySQL compatible database)
 * supervisord (A process control system)
 
-It also has the following Python versions installed, including the
-corresponding -devel and -pip packages:
-
-* Python 2.7
-* Python 3.5
-* Python 3.6
-* Python 3.7
-* Python 3.8
+It also has Python 3.6 installed, including the corresponding -devel and -pip packages.
+It also has Java 1.8.0 OpenJDK and Sbt 1.3.13.
 
 ## Usage
 
-There are multiple
-[tags](https://hub.docker.com/r/giovtorres/docker-centos7-slurm/tags/)
-available.  To use the latest available image, run:
+There is currently only one
+[tag](https://hub.docker.com/r/noaagsl/docker-centos7-slurm/tags/)
+available, but more may follow.  To use the latest available image, run:
 
 ```shell
-docker pull giovtorres/docker-centos7-slurm:latest
-docker run -it -h ernie giovtorres/docker-centos7-slurm:latest
+docker pull noaagsl/docker-centos7-slurm:latest
+docker run -it -h ernie noaagsl/docker-centos7-slurm:latest
 ```
 
 The above command will drop you into a bash shell inside the container. Tini
@@ -75,39 +66,45 @@ PartitionName=normal
    DefMemPerCPU=500 MaxMemPerNode=UNLIMITED
 ```
 
-## Building
-
-### Using Existing Tags
-
-There are multiple versions of Slurm available, each with its own tag.  To build
-a specific version of Slurm, checkout the tag that matches that version and
-build the Dockerfile:
+You can also run the container in detached mode:
 
 ```shell
-git clone https://github.com/giovtorres/docker-centos7-slurm
-git checkout <tag>
+docker run -d -t -h ernie --name slurm noaagsl/docker-centos7-slurm:latest
+```
+
+The above command will start the Slurm cluster in the container and you can then interact with it:
+
+```shell
+$ docker exec slurm sinfo
+PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
+normal*      up 5-00:00:00      5   idle c[1-5]
+debug        up 5-00:00:00      5   down c[6-10]
+```
+
+```shell
+$ docker exec slurm sbatch --wrap="sleep 60"
+Submitted batch job 2
+```
+
+```shell
+$ docker exec chiltepin-slurm squeue                  
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+                 2    normal     wrap     root  R       0:05      1 c1
+```
+
+
+## Building
+
+```shell
+git clone https://github.com/NOAA-GSD/docker-centos7-slurm.git
 docker build -t docker-centos7-slurm .
 ```
 
 ### Using Build Args
 
-You can use docker's `--build-arg` option to customize the version of Slurm
-and the version(s) of Python at build time.
-
-To specify the version of Slurm, assign a valid Slurm tag to the `SLURM_TAG`
-build argument:
-
-```shell
-docker build --build-arg SLURM_TAG="slurm-19-05-1-2" -t docker-centos7-slurm:19.05.1-2
-```
-
-To specify the version(s) of Python to include in the container, specify a
-space-delimited string of Python versions using the `PYTHON_VERSIONS` build
-argument:
-
-```shell
-docker build --build-arg PYTHON_VERSIONS="3.6 3.7" -t docker-centos7-slurm:py3
-```
+At the moment, there are no build arguments available. The original version
+from [giovtorres/docker-centos7-slurm](https://github.com/giovtorres/docker-centos7-slurm)
+does have several options available, however.
 
 ## Using docker-compose
 
