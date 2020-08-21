@@ -14,7 +14,11 @@ RUN set -ex \
         bash-completion \
         bzip2 \
         bzip2-devel \
+        dpkg \
+        dpkg-devel \
         file \
+        freeglut \
+        freeglut-devel \
         iproute \
         gcc \
         gcc-c++ \
@@ -22,10 +26,32 @@ RUN set -ex \
         git \
         glibc-devel \
         gmp-devel \
-	java-1.8.0-openjdk-devel \
+        gstreamer \
+        gstreamer-devel \
+        gstreamer-python \
+        gstreamer-python-devel \
+        gstreamer-plugins-base \
+        gstreamer-plugins-base-devel \
+        gtk+ \
+        gtk+-devel \
+        gtk2 \
+        gtk2-devel \
+        java-1.8.0-openjdk-devel \
+        libjpeg-turbo \
+        libjpeg-turbo-devel \
         libffi-devel \
         libGL-devel \
+        libnotify \
+        libnotify-devel \
+        libpng \
+        libpng-devel \
+        libSM \
+        libSM-devel \
+        libtiff \
+        libtiff-devel \
         libX11-devel \
+        libXtst \
+        libXtst-devel \
         make \
         mariadb-server \
         mariadb-devel \
@@ -37,22 +63,39 @@ RUN set -ex \
         perl \
         pkconfig \
         psmisc \
-	python3{,-devel,-pip} \
         readline-devel \
+        SDL \
+        SDL-devel \
         sqlite-devel \
         tcl-devel \
         tix-devel \
         tk \
         tk-devel \
         supervisor \
-        wget \
         vim-enhanced \
+        webkitgtk \
+        webkitgtk-devel \
+        webkitgtk \
+        webkitgtk-devel \
+        wget \
+        wxGTK \
+        wxGTK-devel \
+        wxGTK3 \
+        wxGTK3-devel \
         xz-devel \
         zlib-devel \
     && wget http://dl.bintray.com/sbt/rpm/sbt-$SBT_VERSION.rpm \
     && yum install -y sbt-$SBT_VERSION.rpm \
     && yum clean all \
     && rm -rf /var/cache/yum
+
+# Install Python 3.7
+COPY files/install-python.sh /tmp
+#ARG PYTHON_VERSIONS="2.7 3.5 3.6 3.7 3.8"
+ARG PYTHON_VERSIONS="3.7"
+RUN set -ex \
+    && for version in ${PYTHON_VERSIONS}; do /tmp/install-python.sh "$version"; done \
+    && rm -f /tmp/install-python.sh
 
 # Fetch sbt artifacts
 RUN sbt about
@@ -101,6 +144,9 @@ COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 ARG TINI_VERSION=v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
 RUN chmod +x /sbin/tini
+
+# Set the display
+ENV DISPLAY=host.docker.internal:0
 
 ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
 CMD ["/bin/bash"]
