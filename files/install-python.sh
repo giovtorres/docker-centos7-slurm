@@ -74,4 +74,4 @@ case "${PYTHON_VERSION}" in
         ;;
 esac
 
-"pip${PYTHON_VERSION}" install Cython nose
+"pip${PYTHON_VERSION}" install Cython nose requests wxPython ObjectListView

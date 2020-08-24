@@ -12,7 +12,7 @@ container runs the following processes:
 * mariadb (MySQL compatible database)
 * supervisord (A process control system)
 
-It also has Python 3.6 installed, including the corresponding -devel and -pip packages.
+It also has Python 3.7 installed, including the corresponding -devel and -pip packages.
 It also has Java 1.8.0 OpenJDK and Sbt 1.3.13.
 
 ## Usage
