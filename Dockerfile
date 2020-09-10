@@ -14,6 +14,7 @@ RUN set -ex \
         bash-completion \
         bzip2 \
         bzip2-devel \
+        dbus-x11 \
         dpkg \
         dpkg-devel \
         file \
