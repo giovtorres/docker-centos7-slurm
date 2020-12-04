@@ -2,6 +2,7 @@ FROM centos:7.7.1908
 
 ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 ARG SBT_VERSION=1.3.13
+ARG SCALA_VERSION=2.13.3
 ARG SLURM_VERSION=19-05-4-1
 
 # Install common YUM dependency packages
@@ -87,6 +88,8 @@ RUN set -ex \
         zlib-devel \
     && wget http://dl.bintray.com/sbt/rpm/sbt-$SBT_VERSION.rpm \
     && yum install -y sbt-$SBT_VERSION.rpm \
+    && wget http://downloads.lightbend.com/scala/$SCALA_VERSION/scala-$SCALA_VERSION.rpm \
+    && yum install -y scala-$SCALA_VERSION.rpm \
     && yum clean all \
     && rm -rf /var/cache/yum
 
