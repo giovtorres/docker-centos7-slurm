@@ -1,6 +1,6 @@
 # Slurm on CentOS 7 Docker Image
 
-[![Build Status](https://travis-ci.com/NOAA-GSD/docker-centos7-slurm.svg?branch=develop)](https://travis-ci.com/NOAA-GSD/docker-centos7-slurm)
+[![Build Status](https://travis-ci.com/NOAA-GSL/docker-centos7-slurm.svg?branch=develop)](https://travis-ci.com/NOAA-GSL/docker-centos7-slurm)
 
 This is an all-in-one [Slurm](https://slurm.schedmd.com/) installation (forked from [giovtorres/docker-centos7-slurm](https://github.com/giovtorres/docker-centos7-slurm)).  This
 container runs the following processes:
@@ -96,7 +96,7 @@ $ docker exec chiltepin-slurm squeue
 ## Building
 
 ```shell
-git clone https://github.com/NOAA-GSD/docker-centos7-slurm.git
+git clone https://github.com/NOAA-GSL/docker-centos7-slurm.git
 docker build -t docker-centos7-slurm .
 ```
 
