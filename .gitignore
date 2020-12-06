@@ -3,3 +3,9 @@
 __pycache__
 venv
 volumes
+
+venv
+.vscode
+.pytest_cache
+.hypothesis
+__pycache__
