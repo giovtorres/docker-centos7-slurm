@@ -3,11 +3,11 @@ version: '3'
 services:
   slurm:
     build: .
-    hostname: ernie
+    hostname: slurmctl
     stdin_open: true
     tty: true
     volumes:
       - ./volumes/lib:/var/lib/slurmd
-      - ./volumes/spool:/var/spool/slurmd
+      - ./volumes/spool:/var/spool/slurm
       - ./volumes/log:/var/log/slurm
       - ./volumes/db:/var/lib/mysql

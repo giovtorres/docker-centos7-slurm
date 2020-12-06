@@ -3,7 +3,7 @@
 [![Docker Build Status](https://img.shields.io/docker/build/giovtorres/docker-centos7-slurm.svg)](https://hub.docker.com/r/giovtorres/docker-centos7-slurm/builds/)
 [![Docker Automated build](https://img.shields.io/docker/automated/giovtorres/docker-centos7-slurm.svg)](https://hub.docker.com/r/giovtorres/docker-centos7-slurm/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/giovtorres/docker-centos7-slurm.svg)](https://hub.docker.com/r/giovtorres/docker-centos7-slurm/)
-[![](https://images.microbadger.com/badges/image/giovtorres/docker-centos7-slurm.svg)](https://microbadger.com/images/giovtorres/docker-centos7-slurm "Get your own image badge on microbadger.com")
+[![MicroBadger](https://images.microbadger.com/badges/image/giovtorres/docker-centos7-slurm.svg)](https://microbadger.com/images/giovtorres/docker-centos7-slurm "Get your own image badge on microbadger.com")
 
 This is an all-in-one [Slurm](https://slurm.schedmd.com/) installation.  This
 container runs the following processes:
@@ -18,11 +18,10 @@ container runs the following processes:
 It also has the following Python versions installed, including the
 corresponding -devel and -pip packages:
 
-* Python 2.7
-* Python 3.5
 * Python 3.6
 * Python 3.7
 * Python 3.8
+* Python 3.9
 
 ## Usage
 
@@ -32,7 +31,7 @@ available.  To use the latest available image, run:
 
 ```shell
 docker pull giovtorres/docker-centos7-slurm:latest
-docker run -it -h ernie giovtorres/docker-centos7-slurm:latest
+docker run -it -h slurmctl giovtorres/docker-centos7-slurm:latest
 ```
 
 The above command will drop you into a bash shell inside the container. Tini
@@ -40,7 +39,7 @@ is responsible for `init` and supervisord is the process control system . To
 view the status of all the processes, run:
 
 ```shell
-[root@ernie /]# supervisorctl status
+[root@slurmctl /]# supervisorctl status
 munged                           RUNNING   pid 23, uptime 0:02:35
 mysqld                           RUNNING   pid 24, uptime 0:02:35
 slurmctld                        RUNNING   pid 25, uptime 0:02:35
@@ -48,22 +47,22 @@ slurmd                           RUNNING   pid 22, uptime 0:02:35
 slurmdbd                         RUNNING   pid 26, uptime 0:02:35
 ```
 
-In `slurm.conf`, the **ControlMachine** hostname is set to **ernie**. Since
+In `slurm.conf`, the **ControlMachine** hostname is set to **slurmctl**. Since
 this is an all-in-one installation, the hostname must match **ControlMachine**.
-Therefore, you must pass the `-h ernie` to docker at run time so that the
+Therefore, you must pass the `-h slurmctl` to docker at run time so that the
 hostnames match.
 
-You can run the usual slurm commands:
+You can run the usual Slurm commands:
 
 ```shell
-[root@ernie /]# sinfo
+[root@slurmctl /]# sinfo
 PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
 normal*      up 5-00:00:00      5   idle c[1-5]
 debug        up 5-00:00:00      5   idle c[6-10]
 ```
 
 ```shell
-[root@ernie /]# scontrol show partition
+[root@slurmctl /]# scontrol show partition normal
 PartitionName=normal
    AllowGroups=ALL AllowAccounts=ALL AllowQos=ALL
    AllocNodes=ALL Default=YES QoS=N/A
