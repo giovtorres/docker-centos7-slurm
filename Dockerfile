@@ -38,7 +38,7 @@ RUN set -ex \
         gtk+-devel \
         gtk2 \
         gtk2-devel \
-        java-1.8.0-openjdk-devel \
+        java-11-openjdk-devel \
         libjpeg-turbo \
         libjpeg-turbo-devel \
         libffi-devel \
