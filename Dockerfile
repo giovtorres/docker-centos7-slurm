@@ -1,4 +1,4 @@
-FROM centos:7.7.1908
+FROM centos:7.9.2009
 
 LABEL org.opencontainers.image.source="https://github.com/giovtorres/docker-centos7-slurm" \
       org.opencontainers.image.title="docker-centos7-slurm" \
@@ -57,7 +57,7 @@ RUN set -ex \
 COPY files/install-python.sh /tmp
 
 # Install Python versions
-ARG PYTHON_VERSIONS="2.7 3.5 3.6 3.7 3.8"
+ARG PYTHON_VERSIONS="3.6 3.7 3.8"
 RUN set -ex \
     && for version in ${PYTHON_VERSIONS}; do /tmp/install-python.sh "$version"; done \
     && rm -f /tmp/install-python.sh
