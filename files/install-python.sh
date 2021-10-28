@@ -15,12 +15,12 @@ function install_from_source ()
 {
     declare -A VERSIONS
 
-    VERSIONS=( ["3.7"]="3.7.5" ["3.8"]="3.8.0" )
+    VERSIONS=( ["3.7"]="3.7.9" ["3.8"]="3.8.6" ["3.9"]="3.9.0" )
     PYVER="${VERSIONS[$PYTHON_VERSION]}"
     PYURL="https://www.python.org/ftp/python/${PYVER}/Python-${PYVER}.tgz"
 
     case "${PYTHON_VERSION}" in
-        3.7|3.8) BUILD_ARGS=("--enable-optimizations" "--with-ensurepip=install") ;;
+        3.7|3.8|3.9) BUILD_ARGS=("--enable-optimizations" "--with-ensurepip=install") ;;
     esac
 
     wget "${PYURL}"
@@ -36,23 +36,23 @@ function install_from_source ()
     ./configure --enable-ipv6 --enable-shared --with-system-ffi "${BUILD_ARGS[@]}"
 
     case "${PYTHON_VERSION}" in
-        3.7|3.8) make altinstall ;;
+        3.7|3.8|3.9) make altinstall ;;
     esac
 
     unset CFLAGS CXXFLAGS OPT LINKCC CC
     popd
-    rm -rf "Python-${PYVER}"
+    rm -rf Python-"${PYVER}"*
 
     echo "/usr/local/lib" > /etc/ld.so.conf.d/python.conf
     chmod 0644 /etc/ld.so.conf.d/python.conf
     /sbin/ldconfig
 
-    "pip${PYTHON_VERSION}" install Cython nose
+    "pip${PYTHON_VERSION}" install Cython pytest
 }
 
 function centos_install_ius ()
 {
-    rpm -q ius-release || yum -y install https://centos7.iuscommunity.org/ius-release.rpm
+    rpm -q ius-release || yum -y install https://repo.ius.io/ius-release-el7.rpm
     rpm --import --verbose /etc/pki/rpm-gpg/RPM-GPG-KEY-IUS-7
 }
 
@@ -60,18 +60,16 @@ printf "Installing Python %s\n" "${PYTHON_VERSION}"
 yum makecache fast
 
 case "${PYTHON_VERSION}" in
-    2.7) yum -y install python-{devel,pip} ;;
-    3.5)
+    3.6)
         centos_install_ius
         yum -y install python"${PYTHON_VERSION//.}"u{,-devel,-pip}
         ;;
-    3.6) yum -y install python3{,-devel,-pip} ;;
-    3.7|3.8) install_from_source ;;
-
+    3.7|3.8|3.9)
+        install_from_source ;;
     *)
         echo "Python version not supported!"
         exit 1
         ;;
 esac
 
-"pip${PYTHON_VERSION}" install Cython nose
+"pip${PYTHON_VERSION}" install Cython nose pytest
