@@ -38,7 +38,7 @@ RUN set -ex \
         openssl-devel \
         openssl-libs \
         perl \
-        pkconfig \
+        pkgconfig \
         psmisc \
         readline-devel \
         sqlite-devel \
