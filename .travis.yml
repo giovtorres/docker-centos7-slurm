@@ -6,4 +6,4 @@ services:
 install:
   pipenv sync --dev
 script:
-  travis_wait pipenv run pytest -v
+  travis_wait 20 pipenv run pytest -svv
