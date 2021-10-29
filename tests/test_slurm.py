@@ -4,7 +4,8 @@ import pytest
 
 
 @pytest.mark.parametrize(
-    "filepath", [
+    "filepath",
+    [
         "/var/spool/slurm/d",
         "/var/spool/slurm/ctld/clustername",
         "/var/run/slurmd/slurmctld.pid",
@@ -12,18 +13,19 @@ import pytest
         "/var/log/slurm/slurmctld.log",
         "/var/log/slurm/slurmd.log",
         "/var/log/slurm/slurmdbd.log",
-    ]
+    ],
 )
 def test_slurm_var_files(host, filepath):
     assert host.file(filepath).exists
 
 
 @pytest.mark.parametrize(
-    "filepath", [
+    "filepath",
+    [
         "/etc/slurm/gres.conf",
         "/etc/slurm/slurm.conf",
         "/etc/slurm/slurmdbd.conf",
-    ]
+    ],
 )
 def test_slurm_etc_files(host, filepath):
     assert host.file(filepath).exists
