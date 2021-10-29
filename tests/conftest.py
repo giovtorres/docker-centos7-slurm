@@ -24,3 +24,21 @@ def host(request):
     subprocess.check_call(
         ["docker", "rm", "-f", docker_id]
     )
+
+
+@pytest.fixture
+def Slow():
+    def slow(check, timeout=30):
+        timeout_at = time.time() + timeout
+
+        while True:
+            try:
+                assert check()
+            except AssertionError as e:
+                if time.time() < timeout_at:
+                    time.sleep(1)
+                else:
+                    raise e
+            else:
+                return
+    return slow

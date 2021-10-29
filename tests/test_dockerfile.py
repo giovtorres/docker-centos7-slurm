@@ -1,26 +1,6 @@
 """Spec tests for container image."""
 
-import time
-
 import pytest
-
-
-@pytest.fixture
-def Slow():
-    def slow(check, timeout=30):
-        timeout_at = time.time() + timeout
-
-        while True:
-            try:
-                assert check()
-            except AssertionError as e:
-                if time.time() < timeout_at:
-                    time.sleep(1)
-                else:
-                    raise e
-            else:
-                return
-    return slow
 
 
 def test_tini_is_installed(host):
@@ -63,4 +43,4 @@ def test_slurmctld_is_listening(host, Slow):
 
 def test_slurmd_version(host):
     cmd = host.run("scontrol show config | grep SLURM_VERSION")
-    assert "20.02.0" in cmd.stdout
+    assert "20.11.7" in cmd.stdout

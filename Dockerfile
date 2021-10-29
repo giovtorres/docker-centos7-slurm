@@ -80,7 +80,7 @@ RUN set -ex \
     && rm -f /tmp/install-python.sh
 
 # Compile, build and install Slurm from Git source
-ARG SLURM_TAG=slurm-20-02-0-1
+ARG SLURM_TAG=slurm-20-11-7-1
 RUN set -ex \
     && git clone https://github.com/SchedMD/slurm.git \
     && pushd slurm \
@@ -90,7 +90,7 @@ RUN set -ex \
     && make install \
     && install -D -m644 etc/cgroup.conf.example /etc/slurm/cgroup.conf.example \
     && install -D -m644 etc/slurm.conf.example /etc/slurm/slurm.conf.example \
-    && install -D -m644 etc/slurmdbd.conf.example /etc/slurm/slurmdbd.conf.example \
+    && install -D -m600 etc/slurmdbd.conf.example /etc/slurm/slurmdbd.conf.example \
     && install -D -m644 contribs/slurm_completion_help/slurm_completion.sh /etc/profile.d/slurm_completion.sh \
     && popd \
     && rm -rf slurm \
@@ -104,9 +104,9 @@ RUN set -ex \
         /var/log/slurm \
         /var/run/slurmd \
     && /sbin/create-munge-key
-COPY files/slurm/slurm.conf /etc/slurm/slurm.conf
-COPY files/slurm/gres.conf /etc/slurm/gres.conf
-COPY files/slurm/slurmdbd.conf /etc/slurm/slurmdbd.conf
+COPY --chown=slurm files/slurm/slurm.conf /etc/slurm/slurm.conf
+COPY --chown=slurm files/slurm/gres.conf /etc/slurm/gres.conf
+COPY --chown=slurm files/slurm/slurmdbd.conf /etc/slurm/slurmdbd.conf
 COPY files/supervisord.conf /etc/
 
 # Mark externally mounted volumes

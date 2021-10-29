@@ -27,8 +27,8 @@ def test_slurm_var_files(host, filepath):
 )
 def test_slurm_etc_files(host, filepath):
     assert host.file(filepath).exists
-    assert host.file(filepath).user == "root"
-    assert host.file(filepath).group == "root"
+    assert host.file(filepath).user == "slurm"
+    assert host.file(filepath).group == "slurm"
 
 
 @pytest.mark.parametrize("partition", ["normal", "debug"])
