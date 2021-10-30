@@ -12,7 +12,7 @@ function error_with_msg {
 function check_running_status {
     for count in {10..0}; do
         STATUS=$(/usr/bin/supervisorctl status $1 | awk '{print $2}')
-        echo "$1 is in the $STATUS state."
+        echo "- $1 is in the $STATUS state."
         if [[ "$STATUS" = "RUNNING" ]]
         then
             break
@@ -20,6 +20,26 @@ function check_running_status {
             sleep 1
         fi
     done
+}
+
+function check_port_status {
+    for count in {10..0}; do
+        echo 2>/dev/null >/dev/tcp/localhost/$1
+        if [[ "$?" -eq 0 ]]
+        then
+            echo "- Port $1 is listening"
+            break
+        else
+            echo "- Port $1 is not listening"
+            sleep 1
+        fi
+    done
+}
+
+function start_service {
+    echo "- Starting $1"
+    /usr/bin/supervisorctl start $1
+    check_running_status $1
 }
 
 if [ ! -d "/var/lib/mysql/mysql" ]
@@ -69,25 +89,15 @@ echo "- Starting supervisord process manager"
 /usr/bin/supervisord --configuration /etc/supervisord.conf
 
 
-echo "- Starting munged"
-/usr/bin/supervisorctl start munged
-check_running_status munged
+for service in munged mysqld slurmdbd slurmctld slurmd
+do
+    start_service $service
+done
 
-echo "- Starting mysqld"
-/usr/bin/supervisorctl start mysqld
-check_running_status mysqld
-
-echo "- Starting slurmdbd"
-/usr/bin/supervisorctl start slurmdbd
-check_running_status slurmdbd
-
-echo "- Starting slurmctld"
-/usr/bin/supervisorctl start slurmctld
-check_running_status slurmctld
-
-echo "- Starting slurmd"
-/usr/bin/supervisorctl start slurmd
-check_running_status slurmd
+for port in 6817 6818 6819
+do
+    check_port_status $port
+done
 
 echo "- Waiting for the cluster to become available"
 for count in {10..0}; do

@@ -82,9 +82,8 @@ RUN set -ex \
 # Compile, build and install Slurm from Git source
 ARG SLURM_TAG=slurm-20-11-7-1
 RUN set -ex \
-    && git clone https://github.com/SchedMD/slurm.git \
+    && git clone -b ${SLURM_TAG} --single-branch --depth=1 https://github.com/SchedMD/slurm.git \
     && pushd slurm \
-    && git checkout $SLURM_TAG \
     && ./configure --enable-front-end --prefix=/usr --sysconfdir=/etc/slurm \
         --with-mysql_config=/usr/bin --libdir=/usr/lib64 \
     && make install \
@@ -108,6 +107,8 @@ COPY --chown=slurm files/slurm/slurm.conf /etc/slurm/slurm.conf
 COPY --chown=slurm files/slurm/gres.conf /etc/slurm/gres.conf
 COPY --chown=slurm files/slurm/slurmdbd.conf /etc/slurm/slurmdbd.conf
 COPY files/supervisord.conf /etc/
+
+RUN chmod 0600 /etc/slurm/slurmdbd.conf
 
 # Mark externally mounted volumes
 VOLUME ["/var/lib/mysql", "/var/lib/slurmd", "/var/spool/slurm", "/var/log/slurm"]
