@@ -9,6 +9,19 @@ function error_with_msg {
     fi
 }
 
+function check_running_status {
+    for count in {10..0}; do
+        STATUS=$(/usr/bin/supervisorctl status $1 | awk '{print $2}')
+        echo "$1 is in the $STATUS state."
+        if [[ "$STATUS" = "RUNNING" ]]
+        then
+            break
+        else
+            sleep 1
+        fi
+    done
+}
+
 if [ ! -d "/var/lib/mysql/mysql" ]
 then
     echo "[mysqld]\nskip-host-cache\nskip-name-resolve" > /etc/my.cnf.d/docker.cnf
@@ -52,8 +65,29 @@ then
     error_with_msg "MariaDB did not stop"
 fi
 
-echo "- Starting all Slurm processes under supervisord"
+echo "- Starting supervisord process manager"
 /usr/bin/supervisord --configuration /etc/supervisord.conf
+
+
+echo "- Starting munged"
+/usr/bin/supervisorctl start munged
+check_running_status munged
+
+echo "- Starting mysqld"
+/usr/bin/supervisorctl start mysqld
+check_running_status mysqld
+
+echo "- Starting slurmdbd"
+/usr/bin/supervisorctl start slurmdbd
+check_running_status slurmdbd
+
+echo "- Starting slurmctld"
+/usr/bin/supervisorctl start slurmctld
+check_running_status slurmctld
+
+echo "- Starting slurmd"
+/usr/bin/supervisorctl start slurmd
+check_running_status slurmd
 
 echo "- Waiting for the cluster to become available"
 for count in {10..0}; do
