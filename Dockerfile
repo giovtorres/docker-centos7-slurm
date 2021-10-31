@@ -80,11 +80,11 @@ RUN set -ex \
     && rm -f /tmp/install-python.sh
 
 # Compile, build and install Slurm from Git source
-ARG SLURM_TAG=slurm-20-11-7-1
+ARG SLURM_TAG=slurm-21-08-0-1
 RUN set -ex \
     && git clone -b ${SLURM_TAG} --single-branch --depth=1 https://github.com/SchedMD/slurm.git \
     && pushd slurm \
-    && ./configure --enable-front-end --prefix=/usr --sysconfdir=/etc/slurm \
+    && ./configure --prefix=/usr --sysconfdir=/etc/slurm \
         --with-mysql_config=/usr/bin --libdir=/usr/lib64 \
     && make install \
     && install -D -m644 etc/cgroup.conf.example /etc/slurm/cgroup.conf.example \
@@ -96,12 +96,14 @@ RUN set -ex \
     && groupadd -r slurm  \
     && useradd -r -g slurm slurm \
     && mkdir -p /etc/sysconfig/slurm \
-        /var/spool/slurm/{d,ctld} \
+        /var/spool/slurmd \
+        /var/spool/slurmctld \
         /var/log/slurm \
-        /var/run/slurmd \
-    && chown -R slurm:slurm /var/spool/slurm \
+        /var/run/slurm \
+    && chown -R slurm:slurm /var/spool/slurmd \
+        /var/spool/slurmctld \
         /var/log/slurm \
-        /var/run/slurmd \
+        /var/run/slurm \
     && /sbin/create-munge-key
 COPY --chown=slurm files/slurm/slurm.conf /etc/slurm/slurm.conf
 COPY --chown=slurm files/slurm/gres.conf /etc/slurm/gres.conf
