@@ -27,7 +27,7 @@ def host(request):
         .strip()
     )
 
-    time.sleep(20)  # FIXME: needs to be dynamic
+    time.sleep(15)  # FIXME: needs to be dynamic
 
     yield testinfra.get_host(f"docker://{docker_id}")
 
