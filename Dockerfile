@@ -108,7 +108,7 @@ RUN set -ex \
         done
 
 # Compile, build and install Slurm from Git source
-ARG SLURM_TAG=slurm-21-08-0-1
+ARG SLURM_TAG=slurm-20-11-8-1
 RUN set -ex \
     && git clone -b ${SLURM_TAG} --single-branch --depth=1 https://github.com/SchedMD/slurm.git \
     && pushd slurm \
