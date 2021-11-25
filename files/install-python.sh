@@ -15,7 +15,7 @@ function install_from_source ()
 {
     declare -A VERSIONS
 
-    VERSIONS=( ["3.7"]="3.7.9" ["3.8"]="3.8.6" ["3.9"]="3.9.0" )
+    VERSIONS=( ["3.7"]="3.7.12" ["3.8"]="3.8.12" ["3.9"]="3.9.9" )
     PYVER="${VERSIONS[$PYTHON_VERSION]}"
     PYURL="https://www.python.org/ftp/python/${PYVER}/Python-${PYVER}.tgz"
 
