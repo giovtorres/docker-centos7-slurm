@@ -6,8 +6,22 @@ services:
     hostname: slurmctl
     stdin_open: true
     tty: true
+    ports:
+      - "6818:6818"
+      - "6819:6819"
+      - "6820:6820"
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+      - MKNOD
+      - SYS_NICE
+      - SYS_RESOURCE
+    security_opt:
+      - seccomp:unconfined
+      - apparmor:unconfined
     volumes:
       - ./volumes/lib:/var/lib/slurmd
       - ./volumes/spool:/var/spool/slurm
       - ./volumes/log:/var/log/slurm
       - ./volumes/db:/var/lib/mysql
+      - ./volumes/jwt:/etc/slurm/jwt

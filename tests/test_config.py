@@ -13,6 +13,7 @@ import pytest
         "/var/log/slurm/slurmctld.log",
         "/var/log/slurm/slurmd.log",
         "/var/log/slurm/slurmdbd.log",
+        "/var/log/slurm/slurmrestd.log",
     ],
 )
 def test_slurm_var_files(host, filepath):

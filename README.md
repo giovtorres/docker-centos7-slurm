@@ -8,6 +8,7 @@ container runs the following processes:
 * slurmd (The compute node daemon for Slurm)
 * slurmctld (The central management daemon of Slurm)
 * slurmdbd (Slurm database daemon)
+* slurmrestd (Slurm REST API)
 * munged (Authentication service for creating and validating credentials)
 * mariadb (MySQL compatible database)
 * supervisord (A process control system)
@@ -42,6 +43,7 @@ mysqld                           RUNNING   pid 24, uptime 0:02:35
 slurmctld                        RUNNING   pid 25, uptime 0:02:35
 slurmd                           RUNNING   pid 22, uptime 0:02:35
 slurmdbd                         RUNNING   pid 26, uptime 0:02:35
+slurmrestd                       RUNNING   pid 27, uptime 0:02:35
 ```
 
 In `slurm.conf`, the **ControlMachine** hostname is set to **slurmctl**. Since

@@ -51,6 +51,10 @@ RUN set -ex \
         vim-enhanced \
         xz-devel \
         zlib-devel \
+        http-parser-devel \
+        json-c-devel \
+        libyaml-devel \
+        libjwt-devel \
     && yum clean all \
     && rm -rf /var/cache/yum
 
@@ -86,6 +90,7 @@ RUN set -ex \
     && pushd slurm \
     && ./configure --prefix=/usr --sysconfdir=/etc/slurm \
         --with-mysql_config=/usr/bin --libdir=/usr/lib64 \
+        --enable-slurmrestd --with-jwt \
     && make install \
     && install -D -m644 etc/cgroup.conf.example /etc/slurm/cgroup.conf.example \
     && install -D -m644 etc/slurm.conf.example /etc/slurm/slurm.conf.example \
@@ -93,8 +98,10 @@ RUN set -ex \
     && install -D -m644 contribs/slurm_completion_help/slurm_completion.sh /etc/profile.d/slurm_completion.sh \
     && popd \
     && rm -rf slurm \
-    && groupadd -r slurm  \
-    && useradd -r -g slurm slurm \
+    && groupadd -r slurm -g 1001 \
+    && useradd -r -g slurm -u 1001 -c "scheduler daemon" -s /bin/bash slurm \
+    && groupadd -r slurmrestd -g 1002 \
+    && useradd -r -g slurmrestd -u 1002 -c "REST daemon" -s /bin/bash slurmrestd \
     && mkdir -p /etc/sysconfig/slurm \
         /var/spool/slurmd \
         /var/spool/slurmctld \
@@ -108,8 +115,10 @@ RUN set -ex \
 COPY --chown=slurm files/slurm/slurm.conf /etc/slurm/slurm.conf
 COPY --chown=slurm files/slurm/gres.conf /etc/slurm/gres.conf
 COPY --chown=slurm files/slurm/slurmdbd.conf /etc/slurm/slurmdbd.conf
+COPY --chown=slurm files/slurm/slurmrestd.conf /etc/slurm/slurmrestd.conf
 COPY files/supervisord.conf /etc/
 
+RUN setcap cap_setgid+ep /usr/sbin/slurmrestd
 RUN chmod 0600 /etc/slurm/slurmdbd.conf
 
 # Mark externally mounted volumes

@@ -85,16 +85,23 @@ then
     error_with_msg "MariaDB did not stop"
 fi
 
+if [ ! -f "/etc/slurm/jwt/jwt.key" ]
+then
+  echo "- Generating JWT key"
+  dd if=/dev/urandom bs=32 count=1 >/etc/slurm/jwt/jwt.key
+  chown slurm:slurm /etc/slurm/jwt/jwt.key
+fi
+
 echo "- Starting supervisord process manager"
 /usr/bin/supervisord --configuration /etc/supervisord.conf
 
 
-for service in munged mysqld slurmdbd slurmctld slurmd
+for service in munged mysqld slurmdbd slurmctld slurmd slurmrestd
 do
     start_service $service
 done
 
-for port in 6817 6818 6819
+for port in 6817 6818 6819 6820
 do
     check_port_status $port
 done

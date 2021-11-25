@@ -10,6 +10,7 @@ MARIADB_PORT = 3306
 SLURMCTLD_PORT = 6819
 SLURMD_PORT = 6817
 SLURMDBD_PORT = 6818
+SLURMRESTD_PORT = 6820
 
 
 def test_tini_is_installed(host):
@@ -47,3 +48,6 @@ def test_slurmctld_is_listening(host, Slow):
 
 def test_slurmd_is_listening(host, Slow):
     Slow(lambda: host.socket(f"tcp://{SLURMD_PORT}").is_listening)
+
+def test_slurmrestd_is_listening(host, Slow):
+    Slow(lambda: host.socket(f"tcp://{SLURMRESTD_PORT}").is_listening)
