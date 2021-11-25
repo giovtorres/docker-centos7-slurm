@@ -1,10 +1,10 @@
 FROM centos:7.9.2009
 
-LABEL org.opencontainers.image.source="https://github.com/giovtorres/docker-centos7-slurm" \
+LABEL org.opencontainers.image.source="https://github.com/drewsilcock/docker-centos7-slurm" \
       org.opencontainers.image.title="docker-centos7-slurm" \
       org.opencontainers.image.description="Slurm All-in-one Docker container on CentOS 7" \
-      org.label-schema.docker.cmd="docker run -it -h slurmctl giovtorres/docker-centos7-slurm:latest" \
-      maintainer="Giovanni Torres"
+      org.label-schema.docker.cmd="docker run -it -h slurmctl drewsilcock/docker-centos7-slurm:latest" \
+      maintainer="Drew Silcock"
 
 ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 

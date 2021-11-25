@@ -1,6 +1,6 @@
 # Slurm on CentOS 7 Docker Image
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/giovtorres/docker-centos7-slurm.svg)](https://hub.docker.com/r/giovtorres/docker-centos7-slurm/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/drewsilcockstfc/docker-centos7-slurm.svg)](https://hub.docker.com/r/drewsilcockstfc/docker-centos7-slurm/)
 
 This is an all-in-one [Slurm](https://slurm.schedmd.com/) installation.  This
 container runs the following processes:
@@ -24,12 +24,12 @@ corresponding -devel and -pip packages:
 ## Usage
 
 There are multiple
-[tags](https://hub.docker.com/r/giovtorres/docker-centos7-slurm/tags/)
+[tags](https://hub.docker.com/r/drewsilcockstfc/docker-centos7-slurm/tags/)
 available.  To use the latest available image, run:
 
 ```shell
-docker pull giovtorres/docker-centos7-slurm:latest
-docker run -it -h slurmctl giovtorres/docker-centos7-slurm:latest
+docker pull drewsilcockstfc/docker-centos7-slurm:latest
+docker run -it -h slurmctl drewsilcockstfc/docker-centos7-slurm:latest
 ```
 
 The above command will drop you into a bash shell inside the container. Tini
@@ -82,7 +82,7 @@ a specific version of Slurm, checkout the tag that matches that version and
 build the Dockerfile:
 
 ```shell
-git clone https://github.com/giovtorres/docker-centos7-slurm
+git clone https://github.com/drewsilcock/docker-centos7-slurm
 git checkout <tag>
 docker build -t docker-centos7-slurm .
 ```
