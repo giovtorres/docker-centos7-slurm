@@ -12,13 +12,13 @@ container runs the following processes:
 * mariadb (MySQL compatible database)
 * supervisord (A process control system)
 
-It also has the following Python versions installed, including the
-corresponding -devel and -pip packages:
+It also has the following Python versions installed using
+[pyenv](https://github.com/pyenv/pyenv):
 
-* Python 3.6
-* Python 3.7
-* Python 3.8
-* Python 3.9
+* Python 3.6.15
+* Python 3.7.12
+* Python 3.8.12
+* Python 3.9.9
 
 ## Usage
 
