@@ -3,7 +3,7 @@
 import pytest
 
 TINI_VERSION = "0.18.0"
-PYTHON_VERSIONS = ["3.6", "3.7", "3.8", "3.9"]
+PYTHON_VERSIONS = ["3.6.15", "3.7.12", "3.8.12", "3.9.9"]
 SLURM_VERSION = "21.08.0"
 
 MARIADB_PORT = 3306
@@ -24,8 +24,8 @@ def test_slurm_user_group_exists(host):
 
 @pytest.mark.parametrize("version", PYTHON_VERSIONS)
 def test_python_is_installed(host, version):
-    cmd = host.run(f"python{version} --version")
-    assert cmd.stdout.startswith(f"Python {version}")
+    cmd = host.run(f"pyenv global {version} && python --version")
+    assert cmd.stdout.strip() == f"Python {version}"
 
 
 def test_slurmd_version(host):

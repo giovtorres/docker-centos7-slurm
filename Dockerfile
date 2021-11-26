@@ -6,13 +6,14 @@ LABEL org.opencontainers.image.source="https://github.com/giovtorres/docker-cent
       org.label-schema.docker.cmd="docker run -it -h slurmctl giovtorres/docker-centos7-slurm:latest" \
       maintainer="Giovanni Torres"
 
-ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
+ENV PATH "/root/.pyenv/shims:/root/.pyenv/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
 # Install common YUM dependency packages
+# The IUS repo install epel-release as a dependency while also providing a newer version of Git
 RUN set -ex \
     && yum makecache fast \
     && yum -y update \
-    && yum -y install epel-release \
+    && yum -y install https://repo.ius.io/ius-release-el7.rpm \
     && yum -y install \
         autoconf \
         bash-completion \
@@ -23,7 +24,7 @@ RUN set -ex \
         gcc \
         gcc-c++ \
         gdbm-devel \
-        git \
+        git224 \
         glibc-devel \
         gmp-devel \
         libffi-devel \
@@ -48,6 +49,7 @@ RUN set -ex \
         tk-devel \
         supervisor \
         wget \
+        which \
         vim-enhanced \
         xz-devel \
         zlib-devel \
@@ -72,12 +74,22 @@ ENV TINI_VERSION v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini
 
-# Install Python versions
-ARG PYTHON_VERSIONS="3.6 3.7 3.8 3.9"
-COPY files/install-python.sh /tmp
+# Install supported Python versions and install dependencies.
+# Set the default global to the latest supported version.
+# Use pyenv inside the container to switch between Python versions.
+ARG PYTHON_VERSIONS="3.6.15 3.7.12 3.8.12 3.9.9"
 RUN set -ex \
-    && for version in ${PYTHON_VERSIONS}; do /tmp/install-python.sh "$version"; done \
-    && rm -f /tmp/install-python.sh
+    && curl https://pyenv.run | bash \
+    && echo "eval \"\$(pyenv init --path)\"" >> "${HOME}/.bashrc" \
+    && echo "eval \"\$(pyenv init -)\"" >> "${HOME}/.bashrc" \
+    && source "${HOME}/.bashrc" \
+    && pyenv update \
+    && for python_version in ${PYTHON_VERSIONS}; \
+        do \
+            pyenv install $python_version; \
+            pyenv global $python_version; \
+            pip install Cython pytest; \
+        done
 
 # Compile, build and install Slurm from Git source
 ARG SLURM_TAG=slurm-21-08-0-1
@@ -86,6 +98,7 @@ RUN set -ex \
     && pushd slurm \
     && ./configure --prefix=/usr --sysconfdir=/etc/slurm \
         --with-mysql_config=/usr/bin --libdir=/usr/lib64 \
+    && sed -e 's|#!/usr/bin/env python3|#!/usr/bin/python|' -i doc/html/shtml2html.py \
     && make install \
     && install -D -m644 etc/cgroup.conf.example /etc/slurm/cgroup.conf.example \
     && install -D -m644 etc/slurm.conf.example /etc/slurm/slurm.conf.example \
