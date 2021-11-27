@@ -36,9 +36,8 @@ RUN set -ex \
         munge \
         munge-devel \
         ncurses-devel \
-        openssl-devel \
-        openssl-libs \
-        perl \
+        patch \
+        perl-core \
         pkgconfig \
         psmisc \
         readline-devel \
@@ -74,10 +73,27 @@ ENV TINI_VERSION v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini
 
+# Install OpenSSL1.1.1
+# See PEP 644: https://www.python.org/dev/peps/pep-0644/
+ARG OPENSSL_VERSION="1.1.1l"
+RUN set -ex \
+    && wget --quiet https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz \
+    && tar xzf openssl-${OPENSSL_VERSION}.tar.gz \
+    && pushd openssl-${OPENSSL_VERSION} \
+    && ./config --prefix=/opt/openssl --openssldir=/etc/ssl \
+    && make \
+    && make test \
+    && make install \
+    && echo "/opt/openssl/lib" >> /etc/ld.so.conf.d/openssl.conf \
+    && ldconfig \
+    && popd \
+    && rm -rf openssl-${OPENSSL_VERSION}.tar.gz
+
 # Install supported Python versions and install dependencies.
 # Set the default global to the latest supported version.
 # Use pyenv inside the container to switch between Python versions.
-ARG PYTHON_VERSIONS="3.6.15 3.7.12 3.8.12 3.9.9"
+ARG PYTHON_VERSIONS="3.6.15 3.7.12 3.8.12 3.9.9 3.10.0"
+ARG CONFIGURE_OPTS="--with-openssl=/opt/openssl"
 RUN set -ex \
     && curl https://pyenv.run | bash \
     && echo "eval \"\$(pyenv init --path)\"" >> "${HOME}/.bashrc" \
