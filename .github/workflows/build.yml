@@ -6,15 +6,18 @@ jobs:
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
+
+      - name: Set up Python
         uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
+
       - name: Install Dependencies
         run: |
+          which python
+          ls -l /usr/bin/python*
           python -m pip install --upgrade pip
           python -m pip install pipenv
           pipenv sync --dev
+
       - name: Run Tests
         run: |
           pipenv run pytest -sv
