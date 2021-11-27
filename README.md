@@ -15,10 +15,11 @@ container runs the following processes:
 It also has the following Python versions installed using
 [pyenv](https://github.com/pyenv/pyenv):
 
-* Python 3.6.15
-* Python 3.7.12
-* Python 3.8.12
-* Python 3.9.9
+* 3.6.15
+* 3.7.12
+* 3.8.12
+* 3.9.9
+* 3.10.0
 
 ## Usage
 
