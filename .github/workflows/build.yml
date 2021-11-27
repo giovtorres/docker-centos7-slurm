@@ -2,7 +2,7 @@ name: docker-centos7-slurm
 on:
   push:
     branches:
-      - master
+      - main
   pull_request: {}
 jobs:
   Build:
