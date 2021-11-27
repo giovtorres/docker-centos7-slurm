@@ -21,8 +21,10 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          python3.9 -m pip install --upgrade pip
-          python3.9 -m pip install pipenv
+          which python
+          which python${{ matrix.python-version}}
+          python${{ matrix.python-version }} -m pip install --upgrade pip
+          python${{ matrix.python-version }}-m pip install pipenv
           pipenv --python ${{ matrix.python-version }} install --dev --skip-lock
 
       - name: Run Tests
