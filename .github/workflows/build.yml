@@ -18,11 +18,11 @@ jobs:
 
       - name: Set up Python
         uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version}}
 
       - name: Install Dependencies
         run: |
-          which python
-          which python${{ matrix.python-version}}
           python${{ matrix.python-version }} -m pip install --upgrade pip
           python${{ matrix.python-version }}-m pip install pipenv
           pipenv --python ${{ matrix.python-version }} install --dev --skip-lock
