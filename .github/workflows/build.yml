@@ -1,8 +1,16 @@
 name: docker-centos7-slurm
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request: {}
 jobs:
   Build:
     runs-on: ubuntu-20.04
+    strategy:
+      python-version:
+        - "3.9"
+      fail-fast: false
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v2
@@ -12,11 +20,9 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          which python
-          ls -l /usr/bin/python*
-          python -m pip install --upgrade pip
-          python -m pip install pipenv
-          pipenv sync --dev
+          python3.9 -m pip install --upgrade pip
+          python3.9 -m pip install pipenv
+          pipenv --python ${{ matrix.python-version }} install --dev --skip-lock
 
       - name: Run Tests
         run: |
