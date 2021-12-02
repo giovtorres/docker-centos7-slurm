@@ -1,10 +1,10 @@
 FROM centos:7.9.2009
 
 LABEL org.opencontainers.image.source="https://github.com/drewsilcock/docker-centos7-slurm" \
-      org.opencontainers.image.title="docker-centos7-slurm" \
-      org.opencontainers.image.description="Slurm All-in-one Docker container on CentOS 7" \
-      org.label-schema.docker.cmd="docker run -it -h slurmctl drewsilcock/docker-centos7-slurm:latest" \
-      maintainer="Drew Silcock"
+    org.opencontainers.image.title="docker-centos7-slurm" \
+    org.opencontainers.image.description="Slurm All-in-one Docker container on CentOS 7" \
+    org.label-schema.docker.cmd="docker run -it -h slurmctl drewsilcock/docker-centos7-slurm:latest" \
+    maintainer="Drew Silcock"
 
 ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
@@ -14,47 +14,47 @@ RUN set -ex \
     && yum -y update \
     && yum -y install epel-release \
     && yum -y install \
-        autoconf \
-        bash-completion \
-        bzip2 \
-        bzip2-devel \
-        file \
-        iproute \
-        gcc \
-        gcc-c++ \
-        gdbm-devel \
-        git \
-        glibc-devel \
-        gmp-devel \
-        libffi-devel \
-        libGL-devel \
-        libX11-devel \
-        make \
-        mariadb-server \
-        mariadb-devel \
-        munge \
-        munge-devel \
-        ncurses-devel \
-        openssl-devel \
-        openssl-libs \
-        perl \
-        pkgconfig \
-        psmisc \
-        readline-devel \
-        sqlite-devel \
-        tcl-devel \
-        tix-devel \
-        tk \
-        tk-devel \
-        supervisor \
-        wget \
-        vim-enhanced \
-        xz-devel \
-        zlib-devel \
-        http-parser-devel \
-        json-c-devel \
-        libyaml-devel \
-        libjwt-devel \
+    autoconf \
+    bash-completion \
+    bzip2 \
+    bzip2-devel \
+    file \
+    iproute \
+    gcc \
+    gcc-c++ \
+    gdbm-devel \
+    git \
+    glibc-devel \
+    gmp-devel \
+    libffi-devel \
+    libGL-devel \
+    libX11-devel \
+    make \
+    mariadb-server \
+    mariadb-devel \
+    munge \
+    munge-devel \
+    ncurses-devel \
+    openssl-devel \
+    openssl-libs \
+    perl \
+    pkgconfig \
+    psmisc \
+    readline-devel \
+    sqlite-devel \
+    tcl-devel \
+    tix-devel \
+    tk \
+    tk-devel \
+    supervisor \
+    wget \
+    vim-enhanced \
+    xz-devel \
+    zlib-devel \
+    http-parser-devel \
+    json-c-devel \
+    libyaml-devel \
+    libjwt-devel \
     && yum clean all \
     && rm -rf /var/cache/yum
 
@@ -89,8 +89,8 @@ RUN set -ex \
     && git clone -b ${SLURM_TAG} --single-branch --depth=1 https://github.com/SchedMD/slurm.git \
     && pushd slurm \
     && ./configure --prefix=/usr --sysconfdir=/etc/slurm \
-        --with-mysql_config=/usr/bin --libdir=/usr/lib64 \
-        --enable-slurmrestd --with-jwt \
+    --with-mysql_config=/usr/bin --libdir=/usr/lib64 \
+    --enable-slurmrestd --with-jwt \
     && make install \
     && install -D -m644 etc/cgroup.conf.example /etc/slurm/cgroup.conf.example \
     && install -D -m644 etc/slurm.conf.example /etc/slurm/slurm.conf.example \
@@ -103,14 +103,14 @@ RUN set -ex \
     && groupadd -r slurmrestd -g 1002 \
     && useradd -r -g slurmrestd -u 1002 -c "REST daemon" -s /bin/bash slurmrestd \
     && mkdir -p /etc/sysconfig/slurm \
-        /var/spool/slurmd \
-        /var/spool/slurmctld \
-        /var/log/slurm \
-        /var/run/slurm \
+    /var/spool/slurmd \
+    /var/spool/slurmctld \
+    /var/log/slurm \
+    /var/run/slurm \
     && chown -R slurm:slurm /var/spool/slurmd \
-        /var/spool/slurmctld \
-        /var/log/slurm \
-        /var/run/slurm \
+    /var/spool/slurmctld \
+    /var/log/slurm \
+    /var/run/slurm \
     && /sbin/create-munge-key
 COPY --chown=slurm files/slurm/slurm.conf /etc/slurm/slurm.conf
 COPY --chown=slurm files/slurm/gres.conf /etc/slurm/gres.conf
