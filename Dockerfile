@@ -97,17 +97,22 @@ RUN set -ex \
     && install -D -m600 etc/slurmdbd.conf.example /etc/slurm/slurmdbd.conf.example \
     && install -D -m644 contribs/slurm_completion_help/slurm_completion.sh /etc/profile.d/slurm_completion.sh \
     && popd \
-    && rm -rf slurm \
+    && rm -rf slurm
+
+RUN set -ex \
     && groupadd -r slurm -g 1001 \
     && useradd -r -g slurm -u 1001 -c "scheduler daemon" -s /bin/bash slurm \
     && groupadd -r slurmrestd -g 1002 \
-    && useradd -r -g slurmrestd -u 1002 -c "REST daemon" -s /bin/bash slurmrestd \
-    && mkdir -p /etc/sysconfig/slurm \
+    && useradd -g slurmrestd -u 1002 -c "REST daemon" -s /bin/bash slurmrestd \
+    && mkdir -p \
+    /etc/sysconfig/slurm \
+    /var/spool/slurm \
     /var/spool/slurmd \
     /var/spool/slurmctld \
     /var/log/slurm \
     /var/run/slurm \
-    && chown -R slurm:slurm /var/spool/slurmd \
+    && chown -R slurm:slurm \
+    /var/spool/slurmd \
     /var/spool/slurmctld \
     /var/log/slurm \
     /var/run/slurm \
@@ -118,10 +123,10 @@ COPY --chown=slurm files/slurm/slurmdbd.conf /etc/slurm/slurmdbd.conf
 COPY --chown=slurm files/slurm/slurmrestd.conf /etc/slurm/slurmrestd.conf
 COPY files/supervisord.conf /etc/
 
-RUN setcap cap_setgid+ep /usr/sbin/slurmrestd \
-  && chmod 0600 /etc/slurm/slurmdbd.conf \
-  && mkdir /slurm-workdir \
-  && chown -R slurm:slurm /slurm-workdir
+RUN chmod 0600 /etc/slurm/slurmdbd.conf \
+    && mkdir /slurm-workdir \
+    && chown -R slurmrestd:slurmrestd /slurm-workdir
+
 
 # Mark externally mounted volumes
 VOLUME ["/var/lib/mysql", "/var/lib/slurmd", "/var/spool/slurm", "/var/log/slurm", "/slurm-workdir"]
