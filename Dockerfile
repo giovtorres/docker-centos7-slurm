@@ -117,6 +117,7 @@ RUN set -ex \
     /var/log/slurm \
     /var/run/slurm \
     && /sbin/create-munge-key
+
 COPY --chown=slurm files/slurm/slurm.conf /etc/slurm/slurm.conf
 COPY --chown=slurm files/slurm/gres.conf /etc/slurm/gres.conf
 COPY --chown=slurm files/slurm/slurmdbd.conf /etc/slurm/slurmdbd.conf
@@ -124,12 +125,10 @@ COPY --chown=slurm files/slurm/slurmrestd.conf /etc/slurm/slurmrestd.conf
 COPY files/supervisord.conf /etc/
 
 RUN chmod 0600 /etc/slurm/slurmdbd.conf \
-    && mkdir /slurm-workdir \
-    && chown -R slurmrestd:slurmrestd /slurm-workdir
-
+    && mkdir /home/slurmrestd/slurm-workdir
 
 # Mark externally mounted volumes
-VOLUME ["/var/lib/mysql", "/var/lib/slurmd", "/var/spool/slurm", "/var/log/slurm", "/slurm-workdir"]
+VOLUME ["/var/lib/mysql", "/var/lib/slurmd", "/var/spool/slurm", "/var/log/slurm", "/home/slurmrestd/slurm-workdir"]
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
