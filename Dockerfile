@@ -124,11 +124,10 @@ COPY --chown=slurm files/slurm/slurmdbd.conf /etc/slurm/slurmdbd.conf
 COPY --chown=slurm files/slurm/slurmrestd.conf /etc/slurm/slurmrestd.conf
 COPY files/supervisord.conf /etc/
 
-RUN chmod 0600 /etc/slurm/slurmdbd.conf \
-    && mkdir /home/slurmrestd/slurm-workdir
+RUN chmod 0600 /etc/slurm/slurmdbd.conf
 
 # Mark externally mounted volumes
-VOLUME ["/var/lib/mysql", "/var/lib/slurmd", "/var/spool/slurm", "/var/log/slurm", "/home/slurmrestd/slurm-workdir"]
+VOLUME ["/var/lib/mysql", "/var/lib/slurmd", "/var/spool/slurm", "/var/log/slurm", "/home/slurmrestd"]
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 

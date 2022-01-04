@@ -85,10 +85,18 @@ then
     error_with_msg "MariaDB did not stop"
 fi
 
-echo "- Generating JWT key"
-dd if=/dev/urandom bs=32 count=1 >/etc/slurm/jwt/jwt_hs256.key
-chown slurm:slurm /etc/slurm/jwt/jwt_hs256.key
-chmod 0600 /etc/slurm/jwt/jwt_hs256.key
+jwt_secret_file="/etc/slurm/jwt/jwt_hs256.key"
+if [ "$JWT_SECRET" ]
+then
+    echo "- JWT secret variable found, writing..."
+    echo "$JWT_SECRET" > $jwt_secret_file
+else
+    echo "- No JWT secret variable found, generating JWT key"
+    dd if=/dev/urandom bs=32 count=1 >$jwt_secret_file
+fi
+
+chown slurm:slurm $jwt_secret_file
+chmod 0600 $jwt_secret_file
 
 echo "- Starting supervisord process manager"
 /usr/bin/supervisord --configuration /etc/supervisord.conf
