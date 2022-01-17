@@ -1,4 +1,4 @@
-FROM centos:7.9.2009
+FROM centos:7.9.2009 as base
 
 LABEL org.opencontainers.image.source="https://github.com/drewsilcock/docker-centos7-slurm" \
     org.opencontainers.image.title="docker-centos7-slurm" \
@@ -55,43 +55,26 @@ RUN set -ex \
     json-c-devel \
     libyaml-devel \
     libjwt-devel \
+    python3 \
     && yum clean all \
     && rm -rf /var/cache/yum
-
-# Set Vim and Git defaults
-RUN set -ex \
-    && echo "syntax on"           >> "$HOME/.vimrc" \
-    && echo "set tabstop=4"       >> "$HOME/.vimrc" \
-    && echo "set softtabstop=4"   >> "$HOME/.vimrc" \
-    && echo "set shiftwidth=4"    >> "$HOME/.vimrc" \
-    && echo "set expandtab"       >> "$HOME/.vimrc" \
-    && echo "set autoindent"      >> "$HOME/.vimrc" \
-    && echo "set fileformat=unix" >> "$HOME/.vimrc" \
-    && echo "set encoding=utf-8"  >> "$HOME/.vimrc" \
-    && git config --global color.ui auto \
-    && git config --global push.default simple
 
 # Add Tini
 ENV TINI_VERSION v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini
 
-# Install Python versions
-ARG PYTHON_VERSIONS="3.6 3.7 3.8 3.9"
-COPY files/install-python.sh /tmp
-RUN set -ex \
-    && for version in ${PYTHON_VERSIONS}; do /tmp/install-python.sh "$version"; done \
-    && rm -f /tmp/install-python.sh
+FROM base as builder
 
 # Compile, build and install Slurm from Git source
 ARG SLURM_TAG=slurm-21-08-0-1
 RUN set -ex \
     && git clone -b ${SLURM_TAG} --single-branch --depth=1 https://github.com/SchedMD/slurm.git \
     && pushd slurm \
-    && ./configure --prefix=/usr --sysconfdir=/etc/slurm \
+    && ./configure --quiet --disable-dependency-tracking --prefix=/usr --sysconfdir=/etc/slurm --enable-load-env-no-login \
     --with-mysql_config=/usr/bin --libdir=/usr/lib64 \
     --enable-slurmrestd --with-jwt \
-    && make install \
+    && make --quiet install \
     && install -D -m644 etc/cgroup.conf.example /etc/slurm/cgroup.conf.example \
     && install -D -m644 etc/slurm.conf.example /etc/slurm/slurm.conf.example \
     && install -D -m600 etc/slurmdbd.conf.example /etc/slurm/slurmdbd.conf.example \
@@ -117,6 +100,34 @@ RUN set -ex \
     /var/log/slurm \
     /var/run/slurm \
     && /sbin/create-munge-key
+
+FROM builder as slurm
+
+USER slurmrestd
+ARG SLURM_HOME=/home/slurmrestd
+WORKDIR ${SLURM_HOME}
+
+ARG PYENV_ROOT=${SLURM_HOME}/.pyenv
+
+RUN echo "$SHELL" > output.txt
+RUN echo 'eval "$(pyenv init -)"' >> ${SLURM_HOME}/.bash_profile
+
+RUN echo "export PYENV_ROOT=${PYENV_ROOT}" >> ${SLURM_HOME}/.profile; \
+echo "export PATH=${PYENV_ROOT}/bin:\$PATH" >> ${SLURM_HOME}/.profile; \
+echo 'eval "$(pyenv init --path)"' >> ${SLURM_HOME}/.profile; \
+echo 'pyenv rehash' >> ${SLURM_HOME}/.profile
+
+RUN echo "export PYENV_ROOT=${PYENV_ROOT}" >> ${SLURM_HOME}/.bashrc; \
+echo "export PATH=${PYENV_ROOT}/bin:\$PATH" >> ${SLURM_HOME}/.bashrc; \
+echo 'eval "$(pyenv init --path)"' >> ${SLURM_HOME}/.bashrc; \
+echo 'pyenv rehash' >> ${SLURM_HOME}/.bashrc
+
+RUN git clone --depth 1 --branch v2.2.3 https://github.com/pyenv/pyenv.git ${PYENV_ROOT}
+
+RUN ${PYENV_ROOT}/bin/pyenv install 3.9.9 && ${PYENV_ROOT}/bin/pyenv global 3.9.9
+
+USER root
+WORKDIR /root
 
 COPY --chown=slurm files/slurm/slurm.conf /etc/slurm/slurm.conf
 COPY --chown=slurm files/slurm/gres.conf /etc/slurm/gres.conf
