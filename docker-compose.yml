@@ -4,7 +4,6 @@ services:
     slurmctl:
         build: .
         hostname: slurmctl
-        command: "controller"
         stdin_open: true
         tty: true
         ports:
@@ -33,7 +32,6 @@ services:
     slurmd:
         build: .
         hostname: slurmd
-        command: "worker"
         stdin_open: true
         tty: true
         ports:
