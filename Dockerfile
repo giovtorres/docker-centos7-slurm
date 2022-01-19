@@ -9,11 +9,13 @@ LABEL org.opencontainers.image.source="https://github.com/drewsilcock/docker-cen
 ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
 # Install common YUM dependency packages
+COPY ./input-yum.conf .
 RUN set -ex \
-    && yum makecache fast \
-    && yum -y install deltarpm epel-release \
-    && yum -y update \
-    && yum -y install \
+    && cat input-yum.conf >> /etc/yum.conf \
+    && yum install deltarpm epel-release \
+    && rm input-yum.conf \
+    && yum upgrade \
+    && yum install \
     autoconf \
     bash-completion \
     bzip2 \
