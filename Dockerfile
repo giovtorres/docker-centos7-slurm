@@ -116,7 +116,6 @@ WORKDIR ${SLURM_HOME}
 
 ARG PYENV_ROOT=${SLURM_HOME}/.pyenv
 
-RUN echo "$SHELL" > output.txt
 RUN echo 'eval "$(pyenv init -)"' >> ${SLURM_HOME}/.bash_profile
 
 RUN echo "export PYENV_ROOT=${PYENV_ROOT}" >> ${SLURM_HOME}/.profile; \
