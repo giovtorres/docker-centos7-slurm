@@ -11,8 +11,8 @@ ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 # Install common YUM dependency packages
 RUN set -ex \
     && yum makecache fast \
+    && yum -y install deltarpm epel-release \
     && yum -y update \
-    && yum -y install epel-release \
     && yum -y install \
     autoconf \
     bash-completion \
@@ -71,9 +71,14 @@ ARG SLURM_TAG=slurm-21-08-0-1
 RUN set -ex \
     && git clone -b ${SLURM_TAG} --single-branch --depth=1 https://github.com/SchedMD/slurm.git \
     && pushd slurm \
-    && ./configure --quiet --disable-dependency-tracking --prefix=/usr --sysconfdir=/etc/slurm --enable-load-env-no-login \
-    --with-mysql_config=/usr/bin --libdir=/usr/lib64 \
-    --enable-slurmrestd --with-jwt \
+    && ./configure \
+    --quiet \
+    --prefix=/usr \
+    --sysconfdir=/etc/slurm \
+    --with-mysql_config=/usr/bin \
+    --libdir=/usr/lib64 \
+    --enable-slurmrestd \
+    --with-jwt \
     && make --quiet install \
     && install -D -m644 etc/cgroup.conf.example /etc/slurm/cgroup.conf.example \
     && install -D -m644 etc/slurm.conf.example /etc/slurm/slurm.conf.example \
