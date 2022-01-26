@@ -3,7 +3,7 @@ version: "3"
 services:
   slurmctl:
     build: .
-    image: drew-docker-centos7-slurm:latest
+    image: docker-centos7-slurm:latest
     hostname: slurmctl
     stdin_open: true
     tty: true
@@ -31,7 +31,7 @@ services:
       SLURM_JWT_KEY:
   slurmd:
     build: .
-    image: drew-docker-centos7-slurm:latest
+    image: docker-centos7-slurm:latest
     hostname: slurmd
     stdin_open: true
     tty: true
