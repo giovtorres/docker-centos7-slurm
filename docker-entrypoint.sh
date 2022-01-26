@@ -45,7 +45,7 @@ jwt_key_file="/etc/slurm/jwt/jwt_hs256.key"
 if [ "$SLURM_JWT_KEY" ]
 then
     echo "- JWT secret variable found, writing..."
-    echo "$SLURM_JWT_KEY" > $jwt_key_file
+    echo -n "$SLURM_JWT_KEY" > $jwt_key_file
 else
     echo "Error: JWT key not present in environment - aborting cluster deployment" >&2
     exit 1
