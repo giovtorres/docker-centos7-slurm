@@ -3,7 +3,6 @@ version: "3"
 services:
   slurmctl:
     build: .
-    image: docker-centos7-slurm:latest
     hostname: slurmctl
     stdin_open: true
     tty: true
