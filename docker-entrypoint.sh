@@ -41,9 +41,12 @@ function start_service {
     check_running_status $1
 }
 
-jwt_key_file="/etc/slurm/jwt/jwt_hs256.key"
+jwt_key_dir=/etc/slurm/jwt
+jwt_key_file=$jwt_key_dir/jwt_hs256.key
+
 if [ "$SLURM_JWT_KEY" ]
 then
+    mkdir -p $jwt_key_dir
     echo "- JWT secret variable found, writing..."
     echo -n "$SLURM_JWT_KEY" > $jwt_key_file
 else
