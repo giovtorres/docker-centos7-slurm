@@ -41,18 +41,21 @@ function start_service {
     check_running_status $1
 }
 
-jwt_secret_file="/etc/slurm/jwt/jwt_hs256.key"
-if [ "$JWT_SECRET" ]
+jwt_key_dir=/etc/slurm/jwt
+jwt_key_file=$jwt_key_dir/jwt_hs256.key
+
+if [ "$SLURM_JWT_KEY" ]
 then
+    mkdir -p $jwt_key_dir
     echo "- JWT secret variable found, writing..."
-    echo "$JWT_SECRET" > $jwt_secret_file
+    echo -n "$SLURM_JWT_KEY" > $jwt_key_file
 else
-    echo "- No JWT secret variable found, generating JWT key"
-    dd if=/dev/urandom bs=32 count=1 >$jwt_secret_file
+    echo "Error: JWT key not present in environment - aborting cluster deployment" >&2
+    exit 1
 fi
 
-chown slurm:slurm $jwt_secret_file
-chmod 0600 $jwt_secret_file
+chown slurm:slurm $jwt_key_file
+chmod 0600 $jwt_key_file
 
 if [[ "$NODE_TYPE" == "controller" ]]
 then

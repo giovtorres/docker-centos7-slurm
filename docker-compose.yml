@@ -1,78 +1,69 @@
 version: "3"
 
 services:
-    slurmctl:
-        build: .
-        hostname: slurmctl
-        stdin_open: true
-        tty: true
-        ports:
-            - "6819:6819"
-            - "6820:6820"
-        cap_add:
-            - SYS_PTRACE
-            - SYS_ADMIN
-            - MKNOD
-            - SYS_NICE
-            - SYS_RESOURCE
-        security_opt:
-            - seccomp:unconfined
-            - apparmor:unconfined
-        volumes:
-            - slurmctl-lib-volume:/var/lib/slurmd
-            - slurmctl-spool-volume:/var/spool/slurm
-            - slurmctl-log-volume:/var/log/slurm
-            - slurmctl-db-volume:/var/lib/mysql
-            - slurmctl-jwt-volume:/etc/slurm/jwt
-            # - slurm-workdir-volume:/home/slurmrestd
-        env_file:
-            - uqle.env
-        environment:
-            - NODE_TYPE=controller
-    slurmd:
-        build: .
-        hostname: slurmd
-        stdin_open: true
-        tty: true
-        ports:
-            - "6818:6818"
-        cap_add:
-            - SYS_PTRACE
-            - SYS_ADMIN
-            - MKNOD
-            - SYS_NICE
-            - SYS_RESOURCE
-        security_opt:
-            - seccomp:unconfined
-            - apparmor:unconfined
-        volumes:
-            - slurmd-lib-volume:/var/lib/slurmd
-            - slurmd-spool-volume:/var/spool/slurm
-            - slurmd-log-volume:/var/log/slurm
-            - slurmd-db-volume:/var/lib/mysql
-            - slurmd-jwt-volume:/etc/slurm/jwt
-        env_file:
-            - uqle.env
-        environment:
-            - NODE_TYPE=worker
+  slurmctl:
+    build: .
+    hostname: slurmctl
+    stdin_open: true
+    tty: true
+    ports:
+      - "6819:6819"
+      - "6820:6820"
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+      - MKNOD
+      - SYS_NICE
+      - SYS_RESOURCE
+    security_opt:
+      - seccomp:unconfined
+      - apparmor:unconfined
+    volumes:
+      - slurmctl-lib-volume:/var/lib/slurmd
+      - slurmctl-spool-volume:/var/spool/slurm
+      - slurmctl-log-volume:/var/log/slurm
+      - slurmctl-db-volume:/var/lib/mysql
+      - slurmctl-jwt-volume:/etc/slurm/jwt
+      - slurm-workdir-volume:/home/slurmrestd/shared
+    environment:
+      NODE_TYPE: controller
+      SLURM_JWT_KEY:
+  slurmd:
+    build: .
+    image: docker-centos7-slurm:latest
+    hostname: slurmd
+    stdin_open: true
+    tty: true
+    ports:
+      - "6818:6818"
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+      - MKNOD
+      - SYS_NICE
+      - SYS_RESOURCE
+    security_opt:
+      - seccomp:unconfined
+      - apparmor:unconfined
+    volumes:
+      - slurmd-lib-volume:/var/lib/slurmd
+      - slurmd-spool-volume:/var/spool/slurm
+      - slurmd-log-volume:/var/log/slurm
+      - slurmd-db-volume:/var/lib/mysql
+      - slurmd-jwt-volume:/etc/slurm/jwt
+      - slurm-workdir-volume:/home/slurmrestd/shared
+    environment:
+      NODE_TYPE: worker
+      SLURM_JWT_KEY:
 volumes:
-    slurmctl-db-volume:
-        name: "slurmctl-db-volume"
-    slurmctl-log-volume:
-        name: "slurmctl-log-volume"
-    slurmctl-spool-volume:
-        name: "slurmctl-spool-volume"
-    slurmctl-lib-volume:
-        name: "slurmctl-lib-volume"
-    slurmctl-jwt-volume:
-        name: "slurmctl-jwt-volume"
-    slurmd-db-volume:
-        name: "slurmd-db-volume"
-    slurmd-log-volume:
-        name: "slurmd-log-volume"
-    slurmd-spool-volume:
-        name: "slurmd-spool-volume"
-    slurmd-lib-volume:
-        name: "slurmd-lib-volume"
-    slurmd-jwt-volume:
-        name: "slurmd-jwt-volume"
+  slurmctl-db-volume:
+  slurmctl-log-volume:
+  slurmctl-spool-volume:
+  slurmctl-lib-volume:
+  slurmctl-jwt-volume:
+  slurmd-db-volume:
+  slurmd-log-volume:
+  slurmd-spool-volume:
+  slurmd-lib-volume:
+  slurmd-jwt-volume:
+  slurm-workdir-volume:

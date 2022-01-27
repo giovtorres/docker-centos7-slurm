@@ -132,6 +132,7 @@ RUN git clone --depth 1 --branch v2.2.3 https://github.com/pyenv/pyenv.git ${PYE
 
 RUN ${PYENV_ROOT}/bin/pyenv install 3.9.9 && ${PYENV_ROOT}/bin/pyenv global 3.9.9
 
+RUN mkdir ${SLURM_HOME}/shared
 USER root
 WORKDIR /root
 
@@ -142,9 +143,8 @@ COPY --chown=slurm files/slurm/slurmrestd.conf /etc/slurm/slurmrestd.conf
 COPY files/supervisord.conf /etc/
 
 RUN chmod 0600 /etc/slurm/slurmdbd.conf
-
 # Mark externally mounted volumes
-VOLUME ["/var/lib/mysql", "/var/lib/slurmd", "/var/spool/slurm", "/var/log/slurm", "/home/slurmrestd"]
+VOLUME ["/var/lib/mysql", "/var/lib/slurmd", "/var/spool/slurm", "/var/log/slurm", "/home/slurmrestd/shared"]
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
