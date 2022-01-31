@@ -40,8 +40,10 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           flavor: |
-            suffix=${{ env.tag_suffix }},onlatest=true
+            suffix=:latest${{ env.tag_suffix }},onlatest=true
+            suffix=${{ env.tag_suffix }},onlatest=false
           tags: |
+            type=raw,value=${{ env.SLURM_TAG }}
             type=raw,value=${{ env.SLURM_TAG }}
             type=sha,suffix=
             type=sha,format=long,suffix=
