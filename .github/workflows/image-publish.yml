@@ -42,9 +42,8 @@ jobs:
           flavor: |
             latest=true
             suffix=${{ env.tag_suffix }},onlatest=true
-            prefix=${{ env.SLURM_VERSION }},onlatest=true
+            prefix=${{ env.SLURM_VERSION }}-,onlatest=true
           tags: |
-            type=raw,value=-
             type=sha,suffix=,prefix=
             type=sha,format=long,suffix=,prefix=
 
