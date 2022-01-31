@@ -30,9 +30,9 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       # Suffix tags for general pushes with '-dev'
-      - name: Assign dev tag suffix
-        if: ${{ github.ref != 'refs/heads/main'}}
-        run: echo "tag_suffix=-dev" >> $GITHUB_ENV
+      # - name: Assign dev tag suffix
+      #   if: ${{ github.ref != 'refs/heads/main'}}
+      #   run: echo "tag_suffix=-dev" >> $GITHUB_ENV
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
