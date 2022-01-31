@@ -9,7 +9,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/docker-centos7-slurm
-  SLURM_TAG: slurm-21-08-0-1
+  SLURM_VERSION: 21-08-0-1
 
 jobs:
   build-and-push-image:
@@ -42,9 +42,9 @@ jobs:
           flavor: |
             latest=true
             suffix=${{ env.tag_suffix }},onlatest=true
-            prefix=${{ env.SLURM_TAG }},onlatest=true
+            prefix=${{ env.SLURM_VERSION }},onlatest=true
           tags: |
-            type=raw,value=
+            type=raw,value=-
             type=sha,suffix=,prefix=
             type=sha,format=long,suffix=,prefix=
 
@@ -60,7 +60,7 @@ jobs:
         with:
           push: true
           build-args: |
-            SLURM_TAG=${{ env.SLURM_TAG }}
+            SLURM_TAG=slurm-${{ env.SLURM_VERSION }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
