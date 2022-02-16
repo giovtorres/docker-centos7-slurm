@@ -13,14 +13,10 @@ def test_job_can_run(host):
     time.sleep(2)
     assert host.file("slurm-1.out").content_string == "slurmctl\n"
 
-options = "JobID,JobName,Partition,Account,AllocCPUS,ReqMem,State,ExitCode,NodeList"
-def test_job_can_run_on_partition(host):
-    res = host.run('sinfo --long --Node')
-    print(res.stdout)
-    host.run('sbatch --wrap="hostname; sleep 5" --partition="debug"')
-    res = host.run('squeue')
-    print(res.stdout, res.stderr)
-    time.sleep(10)
-    out = host.run(f"sacct -j 1 -o {options}")
-    print(out.stdout, out.stderr)
-    assert host.file("slurm-1.out").content_string == "slurmctl\n"
+
+@pytest.mark.parametrize("partition", ["normal", "debug"])
+def test_job_can_run_on_partition(host, partition):
+    res = host.run(f'sbatch --parsable --wrap="hostname" --partition={partition}')
+    jobid = res.stdout.strip()
+    time.sleep(2)
+    assert host.file(f"slurm-{jobid}.out").content_string == "slurmctl\n"
