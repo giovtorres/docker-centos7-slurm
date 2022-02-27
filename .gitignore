@@ -1,11 +1,7 @@
-.pytest_cache
-.vscode
 __pycache__
 venv
 volumes
-
-venv
-.vscode
-.pytest_cache
 .hypothesis
-__pycache__
+.idea
+.pytest_cache
+.vscode
