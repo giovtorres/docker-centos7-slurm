@@ -89,12 +89,12 @@ echo "- Starting supervisord process manager"
 /usr/bin/supervisord --configuration /etc/supervisord.conf
 
 
-for service in munged mysqld slurmdbd slurmctld slurmd
+for service in munged mysqld slurmdbd slurmctld slurmd slurmrestd
 do
     start_service $service
 done
 
-for port in 6817 6818 6819
+for port in 6817 6818 6819 6820
 do
     check_port_status $port
 done

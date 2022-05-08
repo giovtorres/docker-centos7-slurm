@@ -13,6 +13,7 @@ import pytest
         "/var/log/slurm/slurmctld.log",
         "/var/log/slurm/slurmd.log",
         "/var/log/slurm/slurmdbd.log",
+        "/etc/slurm/jwt_hs256.key"
     ],
 )
 def test_slurm_var_files(host, filepath):
@@ -25,6 +26,7 @@ def test_slurm_var_files(host, filepath):
         "/etc/slurm/gres.conf",
         "/etc/slurm/slurm.conf",
         "/etc/slurm/slurmdbd.conf",
+        "/etc/slurm/jwt_hs256.key"
     ],
 )
 def test_slurm_etc_file_owners(host, filepath):

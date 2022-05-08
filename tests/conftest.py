@@ -20,6 +20,8 @@ def host(request):
                 "-it",
                 "-h",
                 "slurmctl",
+                "--cap-add",
+                "sys_admin",
                 "docker-centos7-slurm:test",
             ]
         )
@@ -32,6 +34,15 @@ def host(request):
     yield testinfra.get_host(f"docker://{docker_id}")
 
     subprocess.run(["docker", "rm", "-f", docker_id])
+
+
+@pytest.fixture(scope="session")
+def container_ip(host) -> str:
+    address = subprocess.check_output(
+        ["docker", "inspect", "--format", "{{.NetworkSettings.IPAddress}}", host.backend.hostname],
+        encoding="utf-8",
+    )
+    return address.strip()
 
 
 @pytest.fixture
