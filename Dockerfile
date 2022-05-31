@@ -26,7 +26,7 @@ RUN set -ex \
         gcc \
         gcc-c++ \
         gdbm-devel \
-        git224 \
+        git236 \
         glibc-devel \
         gmp-devel \
         libffi-devel \
