@@ -113,13 +113,13 @@ RUN set -ex \
         done
 
 # Compile, build and install Slurm from Git source
-ARG SLURM_TAG=slurm-22-05-7-1
+ARG SLURM_TAG=slurm-22-05-8-1
 ARG JOBS=4
 RUN set -ex \
     && git clone -b ${SLURM_TAG} --single-branch --depth=1 https://github.com/SchedMD/slurm.git \
     && pushd slurm \
     && ./configure --prefix=/usr --sysconfdir=/etc/slurm --enable-slurmrestd \
-        --with-mysql_config=/usr/bin --libdir=/usr/lib64 \
+        --with-mysql_config=/usr/bin --libdir=/usr/lib64 --enable-multiple-slurmd \
     && sed -e 's|#!/usr/bin/env python3|#!/usr/bin/python|' -i doc/html/shtml2html.py \
     && make -j ${JOBS} install \
     && install -D -m644 etc/cgroup.conf.example /etc/slurm/cgroup.conf.example \
@@ -144,7 +144,7 @@ RUN set -ex \
 RUN dd if=/dev/random of=/etc/slurm/jwt_hs256.key bs=32 count=1 \
     && chmod 600 /etc/slurm/jwt_hs256.key && chown slurm:slurm /etc/slurm/jwt_hs256.key
 
-COPY --chown=slurm files/slurm/slurm.conf files/slurm/gres.conf files/slurm/slurmdbd.conf files/slurm/cgroup.conf /etc/slurm/
+COPY --chown=slurm files/slurm/slurm.conf files/slurm/slurmdbd.conf files/slurm/cgroup.conf /etc/slurm/
 COPY files/supervisord.conf /etc/
 
 RUN chmod 0600 /etc/slurm/slurmdbd.conf
