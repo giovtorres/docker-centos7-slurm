@@ -77,7 +77,7 @@ RUN chmod +x /tini
 
 # Install OpenSSL1.1.1
 # See PEP 644: https://www.python.org/dev/peps/pep-0644/
-ARG OPENSSL_VERSION="1.1.1l"
+ARG OPENSSL_VERSION="1.1.1s"
 RUN set -ex \
     && wget --quiet https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz \
     && tar xzf openssl-${OPENSSL_VERSION}.tar.gz \
