@@ -71,13 +71,16 @@ RUN set -ex \
     && git config --global push.default simple
 
 # Add Tini
-ENV TINI_VERSION v0.18.0
+ENV TINI_VERSION v0.19.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini.asc /tini.asc
+RUN gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 \
+ && gpg --batch --verify /tini.asc /tini
 RUN chmod +x /tini
 
 # Install OpenSSL1.1.1
 # See PEP 644: https://www.python.org/dev/peps/pep-0644/
-ARG OPENSSL_VERSION="1.1.1l"
+ARG OPENSSL_VERSION="1.1.1s"
 RUN set -ex \
     && wget --quiet https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz \
     && tar xzf openssl-${OPENSSL_VERSION}.tar.gz \
@@ -89,12 +92,12 @@ RUN set -ex \
     && echo "/opt/openssl/lib" >> /etc/ld.so.conf.d/openssl.conf \
     && ldconfig \
     && popd \
-    && rm -rf openssl-${OPENSSL_VERSION}.tar.gz
+    && rm -f openssl-${OPENSSL_VERSION}.tar.gz
 
 # Install supported Python versions and install dependencies.
 # Set the default global to the latest supported version.
 # Use pyenv inside the container to switch between Python versions.
-ARG PYTHON_VERSIONS="3.6.15 3.7.12 3.8.12 3.9.9 3.10.0"
+ARG PYTHON_VERSIONS="3.6.15 3.7.16 3.8.16 3.9.16 3.10.9 3.11.1"
 ARG CONFIGURE_OPTS="--with-openssl=/opt/openssl"
 RUN set -ex \
     && curl https://pyenv.run | bash \
@@ -110,13 +113,13 @@ RUN set -ex \
         done
 
 # Compile, build and install Slurm from Git source
-ARG SLURM_TAG=slurm-21-08-8-2
+ARG SLURM_TAG=slurm-22-05-8-1
 ARG JOBS=4
 RUN set -ex \
     && git clone -b ${SLURM_TAG} --single-branch --depth=1 https://github.com/SchedMD/slurm.git \
     && pushd slurm \
     && ./configure --prefix=/usr --sysconfdir=/etc/slurm --enable-slurmrestd \
-        --with-mysql_config=/usr/bin --libdir=/usr/lib64 \
+        --with-mysql_config=/usr/bin --libdir=/usr/lib64 --enable-multiple-slurmd \
     && sed -e 's|#!/usr/bin/env python3|#!/usr/bin/python|' -i doc/html/shtml2html.py \
     && make -j ${JOBS} install \
     && install -D -m644 etc/cgroup.conf.example /etc/slurm/cgroup.conf.example \
@@ -139,9 +142,9 @@ RUN set -ex \
     && /sbin/create-munge-key
 
 RUN dd if=/dev/random of=/etc/slurm/jwt_hs256.key bs=32 count=1 \
-    && chmod 600 /etc/slurm/jwt_hs256.key && chown slurm.slurm /etc/slurm/jwt_hs256.key
+    && chmod 600 /etc/slurm/jwt_hs256.key && chown slurm:slurm /etc/slurm/jwt_hs256.key
 
-COPY --chown=slurm files/slurm/slurm.conf files/slurm/gres.conf files/slurm/slurmdbd.conf /etc/slurm/
+COPY --chown=slurm files/slurm/slurm.conf files/slurm/slurmdbd.conf files/slurm/cgroup.conf /etc/slurm/
 COPY files/supervisord.conf /etc/
 
 RUN chmod 0600 /etc/slurm/slurmdbd.conf

@@ -1,5 +1,12 @@
 #!/bin/bash
 
+set -eo pipefail
+
+export SLURM_NODE_COUNT=${SLURM_NODE_COUNT:-3}
+SLURMD_PORT_BASE=7000
+declare -a SLURMD_PORT_RANGE=$(seq -w $SLURMD_PORT_BASE $((SLURMD_PORT_BASE + SLURM_NODE_COUNT)))
+declare -a SLURM_PORTS=(6817 6819 6820 3306 $SLURMD_PORT_RANGE)
+
 function error_with_msg {
     if [[ "$count" -eq 0 ]]
     then
@@ -7,39 +14,6 @@ function error_with_msg {
         echo >&2 "$1"
         exit 1
     fi
-}
-
-function check_running_status {
-    for count in {10..0}; do
-        STATUS=$(/usr/bin/supervisorctl status $1 | awk '{print $2}')
-        echo "- $1 is in the $STATUS state."
-        if [[ "$STATUS" = "RUNNING" ]]
-        then
-            break
-        else
-            sleep 1
-        fi
-    done
-}
-
-function check_port_status {
-    for count in {10..0}; do
-        echo 2>/dev/null >/dev/tcp/localhost/$1
-        if [[ "$?" -eq 0 ]]
-        then
-            echo "- Port $1 is listening"
-            break
-        else
-            echo "- Port $1 is not listening"
-            sleep 1
-        fi
-    done
-}
-
-function start_service {
-    echo "- Starting $1"
-    /usr/bin/supervisorctl start $1
-    check_running_status $1
 }
 
 if [ ! -d "/var/lib/mysql/mysql" ]
@@ -88,15 +62,10 @@ fi
 echo "- Starting supervisord process manager"
 /usr/bin/supervisord --configuration /etc/supervisord.conf
 
-
+echo "- Starting all Services..."
 for service in munged mysqld slurmdbd slurmctld slurmd slurmrestd
 do
-    start_service $service
-done
-
-for port in 6817 6818 6819 6820
-do
-    check_port_status $port
+    /usr/bin/supervisorctl start "$service:*"
 done
 
 echo "- Waiting for the cluster to become available"
@@ -108,7 +77,6 @@ for count in {10..0}; do
         break
     fi
 done
-
 error_with_msg "Slurm partitions failed to start successfully."
 
 echo "- Cluster is now available"
