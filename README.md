@@ -2,6 +2,14 @@
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/giovtorres/docker-centos7-slurm.svg)](https://hub.docker.com/r/giovtorres/docker-centos7-slurm/)
 
+## ⚠️ Deprecated — This repository is no longer actively maintained
+
+> **This repository is deprecated and will not receive further feature or security updates.**
+> Use one of the maintained replacements below depending on your needs.
+
+- **If you need a Slurm container fixture:** https://github.com/giovtorres/slurm-docker
+- **If you need an interactive local Slurm environment:** https://github.com/giovtorres/slurm-docker-cluster
+
 This is an all-in-one [Slurm](https://slurm.schedmd.com/) installation.  This
 container runs the following processes:
 
